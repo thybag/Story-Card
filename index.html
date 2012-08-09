@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-GB">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Story Cards</title>
+	<link rel="stylesheet" href="assets/jquery.ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="assets/cards.app.css" type="text/css" media="all" />
+	 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+	 <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js'></script>
+	 <script src='assets/js/jquery.flip.min.js'></script>
+	 <script src='assets/js/template.js'></script>
+	 <script src='assets/js/cards.app.js'></script>
+
+	<script id='cardTPL' type='text'>
+		<li class='card' data-ref='{id}'>
+			<div class='card_header'>
+				<span> Priority: {priority}</span>
+				<strong>{title}</strong>
+			</div>
+			<div class='inner'>
+				{story}
+			</div> 
+		</li>
+	</script>
+	<script id='sectionTPL' type='text'>
+		<div class='container {type}'>
+			<span>{title}</span>
+			<ul id='{status}' class='connectedSortable' data-type='{status}'>
+			</ul>
+		</div>
+	</script>
+
+
+	
+
+	
+</head>
+<body>
+<div class='top'>
+	<form id='options' method='get' >
+		Product: <select id='product_selector' name='product' onchange='reload(this.value);'></select>
+		<span id='sprints'></span>
+	</form>
+	<h1>Story Cards</h1>
+</div>
+<div class='topbar'>
+	<div class='login' id='login'>
+	</div>
+	<div id='indicator'>Loading...</div>
+	<div style='clear:both'></div>
+</div>
+<div id='card_container'>
+
+</div>
+
+
+ <div id="dialog" title="Login">
+	<form onSubmit='return auth_login(this);'>
+		
+			<div>Username: <input type='text' name='username' /></div>
+			<div>Password: <input type='password' name='password' /></div>
+		
+		<input type='submit' name='Login' class='button'/>
+	</form>
+</div>
+
+ <div id="warning_dialog" title="Notice" style='display:none;'>
+	<div></div>
+	<button onclick="$('#warning_dialog').dialog('close');" class='button'>Ok</button>
+</div>
+
+<div id="info_dialog" style='display:none;'>
+</div>
+
+
+ </body>
+ </html>
+ 
+ 
+ 
+ 
+ 
