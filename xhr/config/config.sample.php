@@ -6,12 +6,13 @@
 	$config['datastore'] = 'sharepoint';
 	$config['auth_method'] = 'ldap';
 	//Cache directory
-	$config['cache.dir'] = '/tmp';
+	$config['cache.dir'] = 'tmp';
 	//Config for datastore driver (Sharepoint/mysql/whatever)
 	$config['sharepoint.wsdl'] = 'config/Lists.asmx.xml';
 	$config['sharepoint.user'] = '';
 	$config['sharepoint.password'] = '';
 	$config['sharepoint.list'] = 'Product Backlog';
+	$config['sharepoint.view'] = 'story_card_api';
 	//$config['mysql.host'] ='';
 	//$config['mysql.user'] ='';
 	//$config['mysql.password'] ='';

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Index
+ * Routes requests to controller actions.
+ *
+ * @author Carl Saggs
+ * @version 0.2
+ * @licence MIT
+ */
+
+
 //Start session
 session_start();
 //Start flight

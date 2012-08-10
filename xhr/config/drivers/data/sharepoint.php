@@ -16,6 +16,7 @@ class SharePointStore extends StoreAbstract{
 			$this->sp = new SharePointAPI(Config::get('sharepoint.user') ,Config::get('sharepoint.password'),Config::get('sharepoint.wsdl'));
 		}
 		$this->sp->setReturnType('object');
+		$this->sp->lowercaseIndexs(false);
 		//get list CRUD interface
 		$this->backlog = $this->sp->CRUD(Config::get('sharepoint.list'));
 	}	
@@ -59,7 +60,7 @@ class SharePointStore extends StoreAbstract{
 				->where('Product','=',$product)
 				->limit(100)
 				->sort('Priority','DESC')
-				->using("51F9A1E5-5773-4BED-825F-6C45F31F70DF")//more stuff in this view
+				->using(Config::get('sharepoint.view'))
 				->get();
 		}else{
 			$data = $this->backlog->query()
@@ -67,10 +68,11 @@ class SharePointStore extends StoreAbstract{
 				->and_where('Sprint','=',$sprint)
 				->limit(100)
 				->sort('Priority','DESC')
-				->using("51F9A1E5-5773-4BED-825F-6C45F31F70DF")//more stuff in this view
+				->using(Config::get('sharepoint.view'))
 				->get();
 
 		}
+
 		//correct format and make mappable
 		foreach($data as $d){
 			//Get data in correct format
