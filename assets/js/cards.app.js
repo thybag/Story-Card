@@ -12,7 +12,6 @@
 		for(var i=0; i<q.length;i++){
 			if(q=='')continue;
 			var s = q[i].split('=');
-			console.log(s);
 			qp[s[0]] = s[1].replace('%20',' ');
 		}
 
@@ -237,8 +236,7 @@
 			var frm = $('<form class="card_data" onSubmit="return updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
 
 			for(var i in info){
-				console.log(cur_data);
-				console.log(cur_data[i]);
+
 				info[i].value = (typeof cur_data[info[i].id] == 'undefined') ? '' : cur_data[info[i].id];
 
 				if(info[i].type=='textarea'){
@@ -285,6 +283,12 @@
 			$("#info_dialog").dialog('close');
 			$.post("xhr/updateCard", $(frm).serialize(), function(data){
 					$("#indicator").hide();
+					var json = JSON.parse(data);
+					//update timestamp
+					systemStore.loaded = json.timestamp;
+					for(var i in json.data){
+						cardStore[json.id][i]= json.data[i];//update local cardStore
+					}
 			});
 			return false;	
 		}
@@ -293,7 +297,6 @@
 
 		function auth_logout(){
 			$.get('xhr/logout', function(){
-
 				reload();
 			});
 		}

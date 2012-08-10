@@ -30,49 +30,42 @@
 		</div>
 	</script>
 
-
-	
-
-	
 </head>
 <body>
-<div class='top'>
-	<form id='options' method='get' >
-		Product: <select id='product_selector' name='product' onchange='reload(this.value);'></select>
-		<span id='sprints'></span>
-	</form>
-	<h1>Story Cards</h1>
-</div>
-<div class='topbar'>
-	<div class='login' id='login'>
+	<div class='top'>
+		<form id='options' method='get' >
+			Product: <select id='product_selector' name='product' onchange='reload(this.value);'></select>
+			<span id='sprints'></span>
+		</form>
+		<h1>Story Cards</h1>
 	</div>
-	<div id='indicator'>Loading...</div>
-	<div style='clear:both'></div>
-</div>
-<div id='card_container'>
-
-</div>
-
-
- <div id="dialog" title="Login">
-	<form onSubmit='return auth_login(this);'>
-		
-			<div>Username: <input type='text' name='username' /></div>
-			<div>Password: <input type='password' name='password' /></div>
-		
-		<input type='submit' name='Login' class='button'/>
-	</form>
-</div>
-
- <div id="warning_dialog" title="Notice" style='display:none;'>
-	<div></div>
-	<button onclick="$('#warning_dialog').dialog('close');" class='button'>Ok</button>
-</div>
-
-<div id="info_dialog" style='display:none;'>
-</div>
+	<div class='topbar'>
+		<div class='login' id='login'>
+		</div>
+		<div id='indicator'>Loading...</div>
+		<div style='clear:both'></div>
+	</div>
+	<div id='card_container'>
 
 
+
+	</div>
+
+	<div id="dialog" title="Login" style='display:none;'>
+		<form onSubmit='return auth_login(this);'>
+			
+				<div>Username: <input type='text' name='username' /></div>
+				<div>Password: <input type='password' name='password' /></div>
+			
+			<input type='submit' name='Login' class='button'/>
+		</form>
+	</div>
+	<div id="warning_dialog" title="Notice" style='display:none;'>
+		<div></div>
+		<button onclick="$('#warning_dialog').dialog('close');" class='button'>Ok</button>
+	</div>
+	<div id="info_dialog" style='display:none;'>
+	</div>
  </body>
  </html>
  

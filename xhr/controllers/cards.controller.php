@@ -159,7 +159,6 @@ class Cards {
 	 * @return null
 	 */
 	public function updateCard(){
-
 		//If user is not authenticated
 		if(!isset($_SESSION['sc_auth'])) return 0;
 		//get id
@@ -169,7 +168,9 @@ class Cards {
 		if(CardStore::updateCard($id, $_POST)){
 			//if successful return new timestamp
 			$this->updateTimeStamp();
-			$this->lastchange();
+			
+			$json = array("id"=>$id,"data"=> $_POST,"timestamp"=>time());
+			echo json_encode($json);
 		}else{
 			//else 0 for failure
 			echo 0;
