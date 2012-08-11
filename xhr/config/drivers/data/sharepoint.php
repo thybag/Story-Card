@@ -81,6 +81,7 @@ class SharePointStore extends StoreAbstract{
 			$d->priority = round(trim($d->priority));
 			$d->time_spent = round(trim($d->time_spent));
 			$d->sprint = round(trim($d->sprint));
+			$d->acceptance = ($d->acceptance!='' && $d->acceptance!='<div></div>') ? $d->acceptance : 'None provided';
 			$jsondata[$d->id] = $d;
 		}
 

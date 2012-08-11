@@ -22,6 +22,10 @@
 	$config['ldap.host']= '';
 	$config['ldap.port']= '';
 	$config['ldap.basedn']= '';
+
+	//Default product and refresh time (how to to date should the UI try to be?)
+	$config['default_product'] = 'Story Card';
+	$config['refresh_time'] = 1000;//check once every second
 	//Mapping (to allow use to built in reMap method to translate your col names to those used by the system)
 	$config['column_mappings']= array(
 			//Attribute => Col Name (in your system)

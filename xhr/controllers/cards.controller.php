@@ -64,6 +64,8 @@ class Cards {
 		$data = array();
 		$data['products'] = CardStore::listProducts();//Get from CardStore driver.
 		$data['constraints'] = $this->constraints;
+		$data['refresh_time']	= Config::get("refresh_time");
+		$data['default_product'] = Config::get("default_product");
 
 		echo json_encode($data);
 	}
@@ -76,7 +78,7 @@ class Cards {
 	public function showlist(){
 		
 		//Set defaults
-		$product = 'Mobile';
+		$product = Config::get("default_product");
 		$sprint = '0';
 		//Override is alternative is provided
 		if(isset($_GET['product'])){$product = $_GET['product'];}

@@ -34,7 +34,7 @@
 <body>
 	<div class='top'>
 		<form id='options' method='get' >
-			Product: <select id='product_selector' name='product' onchange='reload(this.value);'></select>
+			Product: <select id='product_selector' name='product' onchange='cards.reload(this.value);'></select>
 			<span id='sprints'></span>
 		</form>
 		<h1>Story Cards</h1>
@@ -52,7 +52,7 @@
 	</div>
 
 	<div id="dialog" title="Login" style='display:none;'>
-		<form onSubmit='return auth_login(this);'>
+		<form onSubmit='return cards.actions.login(this);'>
 			
 				<div>Username: <input type='text' name='username' /></div>
 				<div>Password: <input type='password' name='password' /></div>
@@ -60,9 +60,9 @@
 			<input type='submit' name='Login' class='button'/>
 		</form>
 	</div>
-	<div id="warning_dialog" title="Notice" style='display:none;'>
+	<div id="alert_dialog" style='display:none;'>
 		<div></div>
-		<button onclick="$('#warning_dialog').dialog('close');" class='button'>Ok</button>
+		<button onclick="$('#alert_dialog').dialog('close');" class='button'>Ok</button>
 	</div>
 	<div id="info_dialog" style='display:none;'>
 	</div>

@@ -12,7 +12,7 @@
         },
         "QA": {
             "display": "row",
-            "require": [
+            "request": [
                 {"id":"time_spent", "name":"Time Spent (hours)", "type":"text"},
                 {"id":"completion_notes", "name":"Work Summary", "type":"textarea"}
             ]

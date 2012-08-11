@@ -34,7 +34,7 @@
 	 #options select {padding:4px;}
 	 #options span a{color:#fff;margin-right:8px;}
 	 .container.column {width:266px; height:92%;float:left;margin-right:0;}
-	 .container.row ul{width:100%;}
+	 .container.row ul,.container.column ul{width:100%;}
 
 	/* #qa,#done,#blocked,#in_progress {width:100%;}*/
 	 
@@ -97,3 +97,4 @@
 		background-color:#3F5377;
 		cursor:pointer;
 	}
+	#alert_dialog div {margin-bottom:20px;}
