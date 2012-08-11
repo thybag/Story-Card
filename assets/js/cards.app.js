@@ -50,6 +50,8 @@
 				_this.settings.refresh_time = d.refresh_time;
 				//Update product list
 				_this.ui.renderProductList(d.products);
+				//Make in to a select2 dropdown
+				$("#product_selector").select2();
 				//Call UI Render
 				_this.ui.renderMain(d.constraints.Statuses, function(){
 					//Load cards for default product

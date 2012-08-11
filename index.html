@@ -6,12 +6,14 @@
 
 	<!-- Styles (@todo Add responsive style for mobile viewing? ) -->
 	<link rel="stylesheet" href="assets/jquery.ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="assets/select2.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="assets/cards.app.css" type="text/css" media="all" />
 
 	<!-- JavaScript Resources -->
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
 	<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js'></script>
 	<script src='assets/js/jquery.flip.min.js'></script>
+	<script src='assets/js/select2.min.js'></script>
 	<script src='assets/js/template.js'></script>
 	<script src='assets/js/cards.app.js'></script>
 
@@ -39,7 +41,7 @@
 <body>
 	<div class='top'>
 		<form id='options' method='get' >
-			Product: <select id='product_selector' name='product' onchange='cards.reload(this.value);'></select>
+			Product: <select id='product_selector' name='product' style="width:280px" onchange='cards.reload(this.value);'></select>
 			<select id='sprints' onchange='cards.reload(document.getElementById("product_selector").value,this.value);'></select>
 		</form>
 		<h1>Story Cards</h1>
