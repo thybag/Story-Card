@@ -36,10 +36,5 @@ class CardStore{
 		return self::$store->listProducts();
 	}
 
-
-
-
-
-
 }
 	

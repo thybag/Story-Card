@@ -1,7 +1,7 @@
 <?php
 /**
  * General classes
- * Define a number of key classes for the StoryCardSystem
+ * Define a number of key classes for the StoryCard System
  *
  * @author Carl Saggs
  * @version 0.2
@@ -36,13 +36,19 @@ abstract class StoreAbstract
     //Remap (utility method)
     //Convert system attributes to datastore attributes
     public function reMap($data,$toInternal=false){
+        //get column mappings (internal=>external)
         $map = Config::get("column_mappings");
+        //If converting the other way, just flip the mapping array round
         if($toInternal) $map = array_flip($map); 
-
+        //Create new Object
         $newData = new stdClass;
+        //For each attribute in passed in data
+        //Add it to the new object with the attribute name found via the mapping config.
+        //Data that does not have a match in the mapping data will be ignored.
         foreach($data as $attr=>$val){
             if(isset($map[$attr])) $newData->{$map[$attr]} = $val;
         }
+        //Return remapped object.
         return $newData;
     }
 }

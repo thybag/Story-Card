@@ -8,7 +8,6 @@
  * @licence MIT
  */
 
-
 //Start session
 session_start();
 //Start flight
