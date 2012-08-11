@@ -45,13 +45,12 @@
 				//set constraints
 				_this.constraints = d.constraints;
 				//Get other options
-				_this.settings.query_options.product = d.default_product;
-				console.log(d);
+				var qo = _this.settings.query_options;
+				if(qo.product=='') qo.product = d.default_product;
 				_this.settings.refresh_time = d.refresh_time;
 				//Update product list
 				_this.ui.renderProductList(d.products);
 				//Call UI Render
-				var qo = _this.settings.query_options;
 				_this.ui.renderMain(d.constraints.Statuses, function(){
 					//Load cards for default product
 					$.get('xhr/list?product='+qo['product']+'&sprint='+qo['sprint'], _this.setup);
@@ -69,7 +68,7 @@
 	 */
 	this.setup = function(data){
 		//Clear any existing data
-		$( ".container ul, #sprints" ).html('').sortable( "destroy" );
+		$( ".container ul" ).html('').sortable( "destroy" );
 		//Hide loading indicator
 		$("#indicator").hide();
 		//Log
@@ -81,8 +80,11 @@
 		_this.settings.authed = d.authed;
 		_this.cardStore = d.data;
 		_this.loaded = d.loaded;
-		//Add products
-		_this.ui.renderSprintList(d.sprints);
+		//Update sprint list (if sprint is all, as it will be whenever product is changed)
+		if(_this.settings.query_options['sprint'].toLowerCase()=='all'){
+			$( "#sprints" ).html('');
+			_this.ui.renderSprintList(d.sprints);
+		}
 		//Render cards
 		 for(var i in d.data){
 				_this.ui.renderCard(d.data[i], $("ul.connectedSortable[data-type='"+d.data[i].status+"']"));
@@ -111,13 +113,14 @@
 		//show loader
 		$("#indicator").show();
 		//get new sprint & product
-		var spr = 'all'
-		var pro = _this.settings.query_options['product'];
-		if(typeof sprint != 'undefined')spr = sprint;
-		if(typeof product != 'undefined')pro = product;
+		qo = _this.settings.query_options;
+		var spr = 'all';
+		var pro = qo.product;
+		if(typeof sprint != 'undefined') spr = sprint;
+		if(typeof product != 'undefined') pro = product;
 		//Update query options
-		_this.settings.query_options['product'] = pro;
-		_this.settings.query_options['sprint'] = spr;
+		qo.product = pro;
+		qo.sprint = spr;
 		//Update URL (if we can)
 		window.history.pushState({}, document.title , '?product='+encodeURIComponent(pro)+'&sprint='+spr);
 		//setup new card display
@@ -250,7 +253,7 @@
 		products.forEach(function(p){
 			o = document.createElement("option");
 			o.innerHTML = p;
-			if(qp == p)o.setAttribute('selected','selected');
+			if(qp.product == p)o.setAttribute('selected','selected');
 			document.getElementById('product_selector').appendChild(o);
 		});
 	}
@@ -264,7 +267,7 @@
 	 */
 	this.ui.renderAuthInfo = function(authed,auth_user){
 		if(authed==1){
-			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" (<a href='javascript:this.actions.logout();'>logout</a>)";
+			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" (<a href='javascript:cards.actions.logout();'>logout</a>)";
 		}else{
 			document.getElementById('login').innerHTML = "<a href='javascript:cards.ui.showLogin();'>Login in interact</a>";
 		}
@@ -294,12 +297,15 @@
 	 */
 	this.ui.renderSprintList = function(sprints){
 		//Add all option to sprint array
-		sprints.push('all');
+		sprints.unshift('All');
 		//For each sprint instance, create a Link node and hookup JS to view sprints data.
 		sprints.forEach(function(s){
-			var a = document.createElement("a");
-			a.setAttribute('href','javascript:cards.reload("'+_this.settings.query_options.product+'","'+s+'")');
-			a.innerHTML = s;
+
+			var a = document.createElement("option");
+			a.setAttribute('value',s);
+			a.innerHTML = (s!='All') ? 'Sprint '+s : s+' sprints';
+			//a.setAttribute('href','javascript:cards.reload("'+_this.settings.query_options.product+'","'+s+'")');
+			
 			//Append in to place
 			document.getElementById('sprints').appendChild(a);
 		});

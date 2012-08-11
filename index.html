@@ -40,7 +40,7 @@
 	<div class='top'>
 		<form id='options' method='get' >
 			Product: <select id='product_selector' name='product' onchange='cards.reload(this.value);'></select>
-			<span id='sprints'></span>
+			<select id='sprints' onchange='cards.reload(document.getElementById("product_selector").value,this.value);'></select>
 		</form>
 		<h1>Story Cards</h1>
 	</div>
