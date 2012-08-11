@@ -41,7 +41,7 @@ class SharePointStore extends StoreAbstract{
 	 * List products
 	 * Returns an array of all products available to view.
 	 *
-	 * return array $products
+	 * @return array $products
 	 */
 	public function listProducts(){
 		//List products alphabetically
@@ -135,7 +135,7 @@ class SharePointStore extends StoreAbstract{
 	 * @param $status New status of card
 	 * @return true|false
 	 */
-	public function moveCard($id,$status){
+	public function moveCard($id, $status){
 		//Save result of move
 		if($this->backlog->update($id, array('Status'=>$status)) != null){
 			//return true if data saved correctly
@@ -143,10 +143,5 @@ class SharePointStore extends StoreAbstract{
 		}else{
 			return false;
 		}
-		
 	}
-
-
-
-
 }
