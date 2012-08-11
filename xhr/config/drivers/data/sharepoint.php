@@ -3,6 +3,7 @@
 include('lib/sharepointAPI.php');
 
 class SharePointStore extends StoreAbstract{
+	//Private vars
 	private $sp;
 	private $backlog;
 
@@ -78,10 +79,11 @@ class SharePointStore extends StoreAbstract{
 			//Get data in correct format
 			$d = $this->reMap($d,true);
 			//make values nicer
-			$d->priority = round(trim($d->priority));
+			$d->priority = ($d->priority =='' || $d->priority=='?') ? '?' : round(trim($d->priority));
 			$d->time_spent = round(trim($d->time_spent));
 			$d->sprint = round(trim($d->sprint));
 			$d->acceptance = ($d->acceptance!='' && $d->acceptance!='<div></div>') ? $d->acceptance : 'None provided';
+			$d->story = ($d->story!='' && $d->story!='<div></div>') ? $d->story : 'None provided';
 			$jsondata[$d->id] = $d;
 		}
 

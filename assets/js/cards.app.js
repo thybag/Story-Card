@@ -1,6 +1,6 @@
 /**
  * Card (Story-Card)
- * JavaScript object defining behavior of storycard interface
+ * JavaScript object defining behavior of the Story-Card interface
  *
  * @author Carl Saggs
  * @version 0.2 (2012-08-11)
@@ -37,7 +37,7 @@
 		}
 		
 		//Hook up resize listener
-		$(window).resize(this.scale_window);
+		$(window).resize(this.ui.scale_window);
 		//Load settings
 		$.get('xhr/settings', function(data){
 				//Proccess data
@@ -97,7 +97,7 @@
 		 //Render Auth info (login / logout details)
 		 _this.ui.renderAuthInfo(d.authed, d.authed_user);
 		 //Ensure window is scaled correctly
-		 _this.scale_window();
+		 _this.ui.scale_window();
 	}
 
 	/**
@@ -203,20 +203,48 @@
 		});
 	}
 
+	/***********************
+
+	 	UI Methods. Methods relating to user interface components.
+	
+	***********************/
+
 	this.ui = {};
+
+	/**
+	 * renderMain
+	 * Builds status groups based on configurition in constraints.
+	 *
+	 * @param statuses Configurtion information for UI
+	 * @param callback Callback to run once UI has been created.
+	 */
 	this.ui.renderMain = function(statuses,callback){
-		var data,temp;
+		var data = {}, templ;
+		//For each status
 		for(var i in statuses){
-			data = {};
+			//Get title (if not specified use status name)
 			data.title = (typeof statuses[i].title == 'undefined') ? i : statuses[i].title;
+			//Set status name
 			data.status = i;
+			//Get display type
 			data.type = statuses[i].display;
-			temp = tpl.template("sectionTPL", data);
-			document.getElementById('card_container').appendChild(temp);
+			//Build template based on above info
+			templ = tpl.template("sectionTPL", data);
+			//Append in to the cards container
+			document.getElementById('card_container').appendChild(templ);
 		}
+		//Runcallback & rescale windows to ensure a good fit.
 		callback();
-		_this.scale_window();
+		_this.ui.scale_window();
 	}
+
+	/**
+	 * renderMain
+	 * Builds status groups based on configurition in constraints.
+	 *
+	 * @param statuses Configurtion information for UI
+	 * @param callback Callback to run once UI has been created.
+	 */
 	this.ui.renderProductList = function(products){
 		var o, qp = _this.settings.query_options;
 		products.forEach(function(p){
@@ -226,6 +254,14 @@
 			document.getElementById('product_selector').appendChild(o);
 		});
 	}
+
+	/**
+	 * renderAuthInfo
+	 * Create the auth info section (username + logout if logged in, else a login button)
+	 *
+	 * @param authed (is user authenticated)
+	 * @param auth_user (username to use if user is authenticated)
+	 */
 	this.ui.renderAuthInfo = function(authed,auth_user){
 		if(authed==1){
 			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" (<a href='javascript:this.actions.logout();'>logout</a>)";
@@ -234,43 +270,77 @@
 		}
 	}
 
-	this.ui.renderCard = function(data, append){
-				data.priority = (data.priority == null || data.priority =='') ? 'N/A' : data.priority;
-		
-				var card = $(tpl.template("cardTPL", data));
-				card.click(_this.ui.flipCard);
-				$(append).append(card);
-				
+	/**
+	 * renderCard
+	 * Render a storycard and append it in to place
+	 *
+	 * @param data Storycard data
+	 * @param append DOM node to append card in to.
+	 */
+	this.ui.renderCard = function(data, append){	
+		//Template storycard
+		var card = $(tpl.template("cardTPL", data));
+		//Hook up flip handler
+		card.click(_this.ui.flipCard);
+		//Append
+		$(append).append(card);		
 	}
+
+	/**
+	 * renderSprintList
+	 * Render list of sprints relating to current product
+	 *
+	 * @param sprints Array of sprint ID's
+	 */
 	this.ui.renderSprintList = function(sprints){
-
-			sprints.push('all');
-			sprints.forEach(function(s){
-				var a = document.createElement("a");
-				a.setAttribute('href','javascript:cards.reload("'+_this.settings.query_options.product+'","'+s+'")');
-				a.innerHTML = s;
-				document.getElementById('sprints').appendChild(a);
-				
-			});
+		//Add all option to sprint array
+		sprints.push('all');
+		//For each sprint instance, create a Link node and hookup JS to view sprints data.
+		sprints.forEach(function(s){
+			var a = document.createElement("a");
+			a.setAttribute('href','javascript:cards.reload("'+_this.settings.query_options.product+'","'+s+'")');
+			a.innerHTML = s;
+			//Append in to place
+			document.getElementById('sprints').appendChild(a);
+		});
 	}
 
+	/**
+	 * flipCard
+	 * Flips a storycard to reveal completion critera on the back
+	 *
+	 * @param event Onclick event
+	 */
 	this.ui.flipCard = function(event){
-		//read store
+		//get card details from the cardstore
 		var card = _this.cardStore[$(this).attr("data-ref")];
 		//Update data and flip the card
 		if($(this).attr("data-showtype")=='accept'){
 			$(this).attr("data-showtype",'story');
-			$(this).children(".inner").html(card.story)//Get description
+			$(this).children(".inner").html(card.story);	//Get description
 			$(this).flip({direction:'lr',color:"#D9E5FA",speed:"3"});
 		}else{
 			$(this).attr("data-showtype",'accept');
-			$(this).children(".inner").html(card.acceptance);//get card acceptance
+			$(this).children(".inner").html(card.acceptance);	//get card acceptance
 			$(this).flip({direction:'rl',color:"#D9D4FA",speed:"3"});
 		}//E7EFFF l blue
 	}
+
+	/**
+	 * showLogin
+	 * Display login dialog
+	 */
 	this.ui.showLogin = function(){
 		$("#dialog").dialog();
 	}
+
+	/**
+	 * alert
+	 * Display an alert box
+	 *
+	 * @param title Alert title
+	 * @param message Alert Message
+	 */
 	this.ui.alert = function(title, msg){
 		$("#alert_dialog div").text(msg);
 		$("#alert_dialog" ).dialog({
@@ -279,6 +349,13 @@
 		});
 	}
 
+	/**
+	 * renderInfoDialog
+	 * Display a dialog with form fields need to obtain a selection of data from the user.
+	 *
+	 * @param info An array of form field configs defining what data needs to be collected.
+	 * @param ref Reference to card we are requesting data about.
+	 */
 	this.ui.renderInfoDialog = function(info, ref){
 		//Get current card from store
 		var cur_data = _this.cardStore[ref];
@@ -305,48 +382,111 @@
 
 	}
 
+	/**
+	 * Scale_window
+	 * Update UI to reflect new window size.
+	 */
+	this.ui.scale_window = function(){
+		var win_width = $(window).width();
+		$(".container.row").width(win_width-292);
+		$(".container.half_row").width((win_width-306)/2);
+		//$("#todo_container").height($(window).height()-85);
+	}
+
+	/***********************
+
+	 	Action Methods. Actions invoked via interface components.
+	
+	***********************/
 
 	this.actions = {};
+
+	/**
+	 * login
+	 * Called when a user submits a login request from the login dialog. Uses ajax to attempt to authenticate the user.
+	 *
+	 * @param fo Reference to submitted form.
+	 */
 	this.actions.login = function(fo){
+		//Show loading indicator
 		$("#indicator").show();
+		//Submit data
 		$.post("xhr/login", { "username": fo.elements['username'].value, "password": fo.elements['password'].value },function(data){
+			//Reload Card data in light of authoristion attempt
 			_this.reload();
+			//Close dialog
 			$("#dialog").dialog('close');
 		});
+		//Stop form submitting
 		return false;
 	}
+
+	/**
+	 * logout
+	 * Called when a user clicks logout. Uses ajax to attempt to log user out of the system
+	 *
+	 * @param fo Reference to submitted form.
+	 */
 	this.actions.logout = function(){
 		$.get('xhr/logout', function(){
+			//reload data in light of authoristion change
 			_this.reload();
 		});
 	}
-	this.actions.saveCard = function(){
-		
-	}
-	this.actions.updateCard = function(frm){
 
+	/**
+	 * saveCard
+	 * Called when a user clicks save on create new card dialog. Use ajax to update DB then reflect new card in UI
+	 *
+	 * @param frm Reference to submitted form.
+	 */
+	this.actions.saveCard = function(frm){
+		//todo
+	}
+
+	/**
+	 * saveCard
+	 * Called when a user clicks save on edit/update dialogs. Use ajax to update DB then reflect updated card in UI
+	 *
+	 * @param frm Reference to submitted form.
+	 */
+	this.actions.updateCard = function(frm){
+		//show loading
 		$("#indicator").show();
+		//hide dialog
 		$("#info_dialog").dialog('close');
+		//Submit data
 		$.post("xhr/updateCard", $(frm).serialize(), function(data){
-				$("#indicator").hide();
-				var json = JSON.parse(data);
-				//update timestamp
-				_this.loaded = json.timestamp;
-				for(var i in json.data){
-					_this.cardStore[json.id][i]= json.data[i];//update local cardStore
-				}
+			//Hide loader when data is returned & parse json returned
+			$("#indicator").hide();
+			var json = JSON.parse(data);
+			//update timestamp
+			_this.loaded = json.timestamp;
+			//Update local copy of card with changed data
+			for(var i in json.data){
+				_this.cardStore[json.id][i]= json.data[i];//update local cardStore
+			}
 		});
 		return false;
 	}
+
+	/**
+	 * moveCard
+	 * Called when a user drags a story card between two status areas. Ensures move is valid, then updates datasource to reflect change via ajax
+	 *
+	 * @param frm Reference to submitted form.
+	 */
 	this.actions.moveCard = function(event, ui){
 		//Show loader
 	 	$("#indicator").text("Saving").show();
+	 	//Get card reference
 	 	var ref = ui.item[0].getAttribute('data-ref');
+	 	//Get new status
 	 	var new_status = ui.item[0].parentNode.getAttribute('data-type');
-
+	 	//Check constraints allow this move
 	 	if(!_this.validateConstraints(ref,new_status)) return;
 
-		//Tell ajax to update sharepoint
+		//Tell ajax to update the datastore
 		$.post("xhr/move", { "id": ref, "status": new_status}, function(data){
 			//Hide loader
 			$("#indicator").text("Loading..").hide();
@@ -363,21 +503,31 @@
 		});
 	}
 
+	/***********************
 
+	 	Private Methods. Internal utility methods
 	
-
-
-	this.scale_window = function(){
-		var win_width = $(window).width();
-		$(".container.row").width(win_width-292);
-		$(".container.half_row").width((win_width-306)/2);
-		//$("#todo_container").height($(window).height()-85);
-	}
-	//Private methods
+	***********************/
 	var p = {};
+	/**
+     * revertMove
+     * Return a storycard to its original location.
+     *
+     * @param ref Storycard ID
+     * @scope private
+	 */
 	p.revertMove = function(ref){
 		$("ul.connectedSortable[data-type='"+_this.cardStore[ref].status+"']").append($(".card[data-ref="+ref+"]"));
 	}
+	/**
+     * visualCardMove
+     * Animate the move of a storycard from one location to another (in order to reflect changes made by other users)
+     *
+     * @param ref Storycard ID
+     * @param card DOM node
+     * @param time to trigger move.
+     * @scope private
+	 */
 	p.visualCardMove = function(ref, card, time){
 		//Store old position
 		var old_pos = card.position();
@@ -396,6 +546,7 @@
 		},time);
 	}
 
+	//Make cards accessiable in the global namespace
 	window.cards = this;
 }).call({});
 
