@@ -1,6 +1,6 @@
 # Story Card
 
-A highly customisable interactive Story Card dashboard. Uses the [Flight](http://flightphp.com/) PHP micro-framework and [jQuery](http://jquery.com/) for all the heavy(ish) lifting. Authenticates over LDAP and currently works with Sharepoint as a data source - more data sources and authentication methods soon!
+A highly customisable interactive Story Card dashboard. Uses the [Flight](http://flightphp.com/) PHP micro-framework and [jQuery](http://jquery.com/) for all the heavy(ish) lifting. Authenticates over LDAP and currently works with Sharepoint and MySQL as a data sources - more data sources and authentication methods soon!
 
 ## SharePoint Installation
 
