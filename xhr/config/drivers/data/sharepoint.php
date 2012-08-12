@@ -76,9 +76,26 @@ class SharePointStore extends StoreAbstract{
 	}
 	//Stubs
 	public function removeCard($id){}
-	public function addCard($data){
 
-		return null;
+
+	/**
+	 * Add Card
+	 * Add a new StoryCard
+	 * 
+	 * @param $data Associative array of data to be used in new card.
+	 * @return CardObject on success | null on fail
+	 */
+	public function addCard($data){
+		//Save new data
+		$card = $this->backlog->create($data);
+		if($card!==null){
+			//reMap $card object to fit systems internal data model 
+			return $this->reMap($card[0], true);
+		}else{
+			//Card was not created, return null.
+			return null;
+		}
+		
 	}
 
 	/**
