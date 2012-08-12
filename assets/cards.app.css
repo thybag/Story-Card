@@ -123,3 +123,11 @@
 		background-color:#3F5377;
 		cursor:pointer;
 	}
+
+	.errorBox {
+		padding:5px !important;
+		margin:5px 0;
+		border-radius:4px;
+		background-color:#ffd2d4;/*red: ffd2d4 / yellow: fefccb; */
+		border:solid 1px #d18a92;/*red:d18a92 yellow; #e7ec74*/
+	}

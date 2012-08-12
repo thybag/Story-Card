@@ -92,7 +92,7 @@
 		
 		//Render cards
 		 for(var i in d.data){
-				_this.ui.renderCard(d.data[i], $("ul.connectedSortable[data-type='"+d.data[i].status+"']"));
+				_this.ui.renderCard(d.data[i]);
 		 };
 		 //Do Dragger
 		 if(d.authed == 1){
@@ -286,7 +286,7 @@
 	 * @param data Storycard data
 	 * @param append DOM node to append card in to.
 	 */
-	this.ui.renderCard = function(data, append){	
+	this.ui.renderCard = function(data){	
 		//Template storycard
 		var card = $(tpl.template("cardTPL", data));
 		//Hook up click handler.
@@ -295,7 +295,9 @@
 		card.single_double_click( _this.ui.flipCard, _this.ui.renderEditDialog, 180);
 
 		//Append Card to status drop zone
-		$(append).append(card);		
+		$("ul.connectedSortable[data-type='"+data.status+"']").append(card);
+		//return new cards jQuery object.
+		return card;
 	}
 
 	/**
@@ -383,7 +385,7 @@
 		});
 
 	}
-	
+
 	/**
 	 * renderEditDialog
 	 * Display a dialog to allow uses to edit the feilds specified in the workflow.json.
@@ -403,6 +405,25 @@
 			width: 520,
 			modal: true,
 			title: "Editing card: "+ref
+		});
+	}
+
+	/**
+	 * renderAddDialog
+	 * Display a dialog to allow uses to edit the feilds specified in the workflow.json.
+	 *
+	 * @param event Click event.
+	 */
+	this.ui.renderAddDialog = function(){
+		//Make form
+		var frm = $('<form class="card_data card_edit" onSubmit="return cards.actions.addCard(this);"></form>');
+		frm = _this.ui.renderForm(frm, _this.workflow.new_card);
+		//Shovel it all in to a dialog.
+		$( "#info_dialog" ).html(frm);
+		$( "#info_dialog" ).dialog({
+			width: 520,
+			modal: true,
+			title: "Adding new Story"
 		});
 	}
 
@@ -441,7 +462,7 @@
 			}
 		}
 		//Add save button
-		frm.append($("<input type='submit' value='Save' class='button' />"));
+		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='button' />"));
 
 		//return populated form object
 		return form;
@@ -500,17 +521,47 @@
 	}
 
 	/**
-	 * saveCard
-	 * Called when a user clicks save on create new card dialog. Use ajax to update DB then reflect new card in UI
+	 * addCard
+	 * Called when a user clicks save on create new card dialog. Use ajax to update datastore & reflect new card in UI
 	 *
 	 * @param frm Reference to submitted form.
 	 */
-	this.actions.saveCard = function(frm){
-		//todo
+	this.actions.addCard = function(frm){
+		//Show loader
+		$("#indicator").show();
+		//hide dialog
+		$("#info_dialog").dialog('close');
+		//Add additional data (default status, current product and current sprint)
+		var card_data = $(frm).serialize();
+		card_data += '&product='+encodeURIComponent(_this.settings.query_options.product)+'&sprint='+encodeURIComponent(_this.settings.query_options.sprint);
+		card_data += '&status='+_this.workflow.attributes['status'].default_value;
+
+		//Submit data via AJAX
+		$.post("xhr/addCard", card_data, function(data){
+			//hide loader
+			$("#indicator").hide();
+			//If somthing goes wrong
+			if(data==0){
+				//Show dialog again with error notice
+				$( "#info_dialog" ).dialog('open');
+				$( "#info_dialog" ).find('.errorBox').css('display','block').text("Warning: Unable to save card.");
+			}else{
+				//If all goes well...
+				var json = JSON.parse(data);			
+				//update timestamp
+				_this.loaded = json.timestamp;
+				//Add the new card to our local cardStore
+				_this.cardStore[json.card.id] = json.card;
+				//Add new card to UI
+				_this.ui.renderCard(json.card);
+			}
+		});
+		//Don't submit form!
+		return false;
 	}
 
 	/**
-	 * saveCard
+	 * updateCard
 	 * Called when a user clicks save on edit/update dialogs. Use ajax to update DB then reflect updated card in UI
 	 *
 	 * @param frm Reference to submitted form.
@@ -524,12 +575,19 @@
 		$.post("xhr/updateCard", $(frm).serialize(), function(data){
 			//Hide loader when data is returned & parse json returned
 			$("#indicator").hide();
-			var json = JSON.parse(data);
-			//update timestamp
-			_this.loaded = json.timestamp;
-			//Update local copy of card with changed data
-			for(var i in json.data){
-				_this.cardStore[json.id][i]= json.data[i];//update local cardStore
+			if(data==0){
+				$( "#info_dialog" ).dialog('open');
+				$( "#info_dialog" ).find('.errorBox').css('display','block').text("Warning: Unable to save changes.");
+			}else{
+				var json = JSON.parse(data);
+				//update timestamp
+				_this.loaded = json.timestamp;
+				//Update local copy of card with changed data
+				for(var i in json.data){
+					_this.cardStore[json.id][i]= json.data[i];//update local cardStore
+				}
+				//Redraw card
+				p.reDrawCard(json.id);
 			}
 		});
 		return false;
@@ -567,9 +625,19 @@
 			}
 		});
 	}
-
+	/**
+	 * toggleControls
+	 * toggle the display of the control panel (via cog icon)
+	 */
 	this.actions.toggleControls = function(){
 		$('#cpanel').toggle();
+	}
+	/**
+	 * launchNewCardDialog
+	 * launch the add new card dialog
+	 */
+	this.actions.launchNewCardDialog = function(){
+		_this.ui.renderAddDialog();
 	}
 
 	/***********************
@@ -578,6 +646,7 @@
 	
 	***********************/
 	var p = {};
+
 	/**
      * revertMove
      * Return a storycard to its original location.
@@ -588,6 +657,7 @@
 	p.revertMove = function(ref){
 		$("ul.connectedSortable[data-type='"+_this.cardStore[ref].status+"']").append($(".card[data-ref="+ref+"]"));
 	}
+
 	/**
      * visualCardMove
      * Animate the move of a storycard from one location to another (in order to reflect changes made by other users)
@@ -615,7 +685,25 @@
 		},time);
 	}
 
-	//Make cards accessiable in the global namespace
+	/**
+     * reDrawCard
+     * re-draw a story card in order to reflect any changes made to it in the UI
+     *
+     * @param ref Storycard ID
+     * @scope private
+	 */
+	p.reDrawCard = function(ref){
+		//get current card
+		var current = $(".card[data-ref="+ref+"]");
+		//Render a new copy
+		var n = _this.ui.renderCard(_this.cardStore[ref]);
+		//Add the new one after the old one (to keep positioning)
+		current.after(n);
+		//Remove the old one
+		current.remove();
+	}
+
+	//Make cards accessible in the global namespace
 	window.cards = this;
 }).call({});
 
@@ -628,7 +716,6 @@ $(function() {
 // Author:  Jacek Becela
 // Source:  http://gist.github.com/399624
 // License: MIT
-
 jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
   return this.each(function(){
     var clicks = 0, self = this;

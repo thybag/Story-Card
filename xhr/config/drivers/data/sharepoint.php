@@ -76,7 +76,10 @@ class SharePointStore extends StoreAbstract{
 	}
 	//Stubs
 	public function removeCard($id){}
-	public function addCard($data){}
+	public function addCard($data){
+
+		return null;
+	}
 
 	/**
 	 * Get Storycards for given "product" & "sprint"

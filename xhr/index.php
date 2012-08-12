@@ -27,8 +27,9 @@ Flight::route('/settings', array($cards,'settings'));
 Flight::route('/login', array($cards,'login'));
 Flight::route('/logout', array($cards,'logout'));
 Flight::route('/move', array($cards,'move'));
-Flight::route('/lastchange', array($cards,'lastchange'));
+Flight::route('/addCard', array($cards,'addCard'));
 Flight::route('/updateCard', array($cards,'updateCard'));
+Flight::route('/lastchange', array($cards,'lastchange'));
 //Go!
 Flight::start();
 ?>

@@ -180,6 +180,29 @@ class Cards {
 	}
 
 	/**
+	 * addCard
+	 * Add a new storycard
+	 *
+	 * @return null
+	 */
+	public function addCard(){
+		//If user is not authenticated
+		if(!isset($_SESSION['sc_auth'])) return 0;
+
+		//Call save on datastore
+		$newCard = CardStore::addCard($_POST);
+		if($newCard !== null){
+			//if successful return new timestamp
+			$this->updateTimeStamp();
+			$json = array("card"=>$newCard,"timestamp"=>time());
+			echo json_encode($json);
+		}else{
+			//else 0 for failure
+			echo 0;
+		}
+	}
+
+	/**
 	 * updateTimeStamp
 	 * Update Last updated timestamp (for browser polling)
 	 * @return null
