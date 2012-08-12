@@ -77,16 +77,19 @@
 		console.log("Loading cards for "+_this.settings.query_options['product']+ ", sprint "+_this.settings.query_options['sprint']);
 		//Proccess data
 		var d = JSON.parse(data);
+
+		//Update sprint list (only if sprint is "all" (change product) or is first load)
+		if(_this.settings.query_options['sprint'].toLowerCase()=='all' || _this.loaded ==0){
+			$( "#sprints" ).html('');
+			_this.ui.renderSprintList(d.sprints);
+		}
+
 		//Store required data
 		_this.settings.current_user = d.authed_user;
 		_this.settings.authed = d.authed;
 		_this.cardStore = d.data;
 		_this.loaded = d.loaded;
-		//Update sprint list (if sprint is all, as it will be whenever product is changed)
-		if(_this.settings.query_options['sprint'].toLowerCase()=='all'){
-			$( "#sprints" ).html('');
-			_this.ui.renderSprintList(d.sprints);
-		}
+		
 		//Render cards
 		 for(var i in d.data){
 				_this.ui.renderCard(d.data[i], $("ul.connectedSortable[data-type='"+d.data[i].status+"']"));
@@ -269,9 +272,10 @@
 	 */
 	this.ui.renderAuthInfo = function(authed,auth_user){
 		if(authed==1){
-			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" (<a href='javascript:cards.actions.logout();'>logout</a>)";
+			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" ( <a href='javascript:cards.actions.logout();'>logout</a> ) <img src='assets/cog.png' title='Controls' onClick='cards.actions.toggleControls()'>";
 		}else{
 			document.getElementById('login').innerHTML = "<a href='javascript:cards.ui.showLogin();'>Login in interact</a>";
+			$("#cpanel").hide();
 		}
 	}
 
@@ -302,12 +306,9 @@
 		sprints.unshift('All');
 		//For each sprint instance, create a Link node and hookup JS to view sprints data.
 		sprints.forEach(function(s){
-
 			var a = document.createElement("option");
 			a.setAttribute('value',s);
 			a.innerHTML = (s!='All') ? 'Sprint '+s : s+' sprints';
-			//a.setAttribute('href','javascript:cards.reload("'+_this.settings.query_options.product+'","'+s+'")');
-			
 			//Append in to place
 			document.getElementById('sprints').appendChild(a);
 		});
@@ -396,8 +397,8 @@
 	 */
 	this.ui.scale_window = function(){
 		var win_width = $(window).width();
-		$(".container.row").width(win_width-292);
-		$(".container.half_row").width((win_width-306)/2);
+		$(".container.row").width(win_width-285);
+		$(".container.half_row").width((win_width-293)/2);
 		//$("#todo_container").height($(window).height()-85);
 	}
 
@@ -509,6 +510,10 @@
 				_this.cardStore[ref].status = new_status;
 			}
 		});
+	}
+
+	this.actions.toggleControls = function(){
+		$('#cpanel').toggle();
 	}
 
 	/***********************

@@ -5,7 +5,7 @@
 		font-family:arial;
 		background-color:#626a78;
 	 }
-	 ul { padding:0;margin:0; float:left;min-height:120px; }
+	 ul { padding:0;margin:0; float:left;min-height:100px; }
 	 li {list-style:none;}
 
 	.top h1 {padding:0;margin:0;font-size:2.2em;}
@@ -13,8 +13,8 @@
 
 	 	background-color:#222;color:#fff;
 	 }
-	.topbar .login { float:right;padding:2px 10px;}
-
+	.topbar .login { float:right;padding:2px 6px;}
+	.topbar .login img { vertical-align:middle; padding-left:4px; cursor:pointer;}
 
 	.topbar .login a {color:#fff;}
 
@@ -27,15 +27,16 @@
 
 	 #todo {width:260px;overflow-y:auto;overflow-x:hidden;height:95%;}
 	 
-	 .container {float:right;margin:6px;width:1370px;border:solid 1px black; background-color:#eef3fb;}
+	 .container {float:right;margin:5px 5px 0 0;width:1370px;border:solid 1px black; background-color:#eef3fb;}
 	 .container span {margin:4px;display:block;font-size:1.2em;color:#243045;font-weight:bold;}
 	 
 	 #options{ float:right;font-size:1.2em;}
 	 #options select {padding:4px;}
 	 #options span a{color:#fff;margin-right:8px;}
-	 .container.column {width:266px; height:92%;float:left;margin-right:0;}
-	 .container.row ul,.container.column ul{width:100%;}
+	 .container.column {width:266px; height:92%;float:left;margin-left:5px;}
+	 .container.row ul,.container.column ul,.container.half_row ul{width:100%;}
 
+	 .container.half_row {margin-left:0;}
 	/* #qa,#done,#blocked,#in_progress {width:100%;}*/
 	 
 	 #dialog input{float:right;}
@@ -98,3 +99,21 @@
 		cursor:pointer;
 	}
 	#alert_dialog div {margin-bottom:20px;}
+
+	#cpanel {height:29px;}
+	#cpanel span{margin:5px;display:inline-block;}
+	#cpanel .action {
+		margin-top:1px;
+		background-color: #4C6591;
+		font-size:1em;
+		text-align:center;
+		color:#fff;
+		width:100px;
+		float:right;
+		padding:6px;
+		margin-right: 1px;
+	}
+	#cpanel .action:hover {
+		background-color:#3F5377;
+		cursor:pointer;
+	}
