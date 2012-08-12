@@ -12,7 +12,7 @@
 	var _this = this;
 	//DataStores
 	this.cardStore = {};
-	this.constraints = {};
+	this.workflow = {};
 	this.loaded = '0';	// Last loaded time
 	//Settings
 	this.settings = {
@@ -42,8 +42,8 @@
 		$.get('xhr/settings', function(data){
 				//Proccess data
 				var d = JSON.parse(data);
-				//set constraints
-				_this.constraints = d.constraints;
+				//set workflow constraints
+				_this.workflow = d.workflow;
 				//Get other options
 				var qo = _this.settings.query_options;
 				if(qo.product=='') qo.product = d.default_product;
@@ -53,7 +53,7 @@
 				//Make in to a select2 dropdown
 				$("#product_selector").select2();
 				//Call UI Render
-				_this.ui.renderMain(d.constraints.Statuses, function(){
+				_this.ui.renderMain(d.workflow.Statuses, function(){
 					//Load cards for default product
 					$.get('xhr/list?product='+qo['product']+'&sprint='+qo['sprint'], _this.setup);
 				});	
@@ -143,7 +143,7 @@
 	 */
 	this.validateConstraints = function(ref, status){
 		//Get constraints assosiated with status card is being moved to.
-		var con = this.constraints.Statuses[status];
+		var con = this.workflow.Statuses[status];
 		//get current status of card.
 		var prev_status = this.cardStore[ref].status;
 		//If a "limit drag to" constraint is found
@@ -289,9 +289,12 @@
 	this.ui.renderCard = function(data, append){	
 		//Template storycard
 		var card = $(tpl.template("cardTPL", data));
-		//Hook up flip handler
-		card.click(_this.ui.flipCard);
-		//Append
+		//Hook up click handler.
+		//Flip on single
+		//Open edit on double
+		card.single_double_click( _this.ui.flipCard, _this.ui.renderEditDialog, 180);
+
+		//Append Card to status drop zone
 		$(append).append(card);		
 	}
 
@@ -370,17 +373,7 @@
 		var cur_data = _this.cardStore[ref];
 		//Make form
 		var frm = $('<form class="card_data" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
-		for(var i in info){
-			//For each bit of data we request, create form field (populated if we already have some data)
-			info[i].value = (typeof cur_data[info[i].id] == 'undefined') ? '' : cur_data[info[i].id];
-			if(info[i].type=='textarea'){
-				frm.append(tpl.template("<div> <span>{name}:</span> <textarea name='{id}'>{value}</textarea></div>", info[i]));
-			}else{
-				frm.append(tpl.template("<div> <span>{name}:</span> <input name='{id}' value='{value}'/></div>", info[i]));
-			}
-		}
-		//Add save button
-		frm.append($("<input type='submit' value='Save' class='button' />"));
+		frm = _this.ui.renderForm(frm, info, cur_data);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
 		$( "#info_dialog" ).dialog({
@@ -389,6 +382,69 @@
 			title: "Additional information required"
 		});
 
+	}
+	
+	/**
+	 * renderEditDialog
+	 * Display a dialog to allow uses to edit the feilds specified in the workflow.json.
+	 *
+	 * @param event Click event.
+	 */
+	this.ui.renderEditDialog = function(event){
+		var ref = $(this).attr('data-ref');
+		//Get current card from store
+		var cur_data = _this.cardStore[ref];
+		//Make form
+		var frm = $('<form class="card_data card_edit" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
+		frm = _this.ui.renderForm(frm, _this.workflow.edit_card, cur_data);
+		//Shovel it all in to a dialog.
+		$( "#info_dialog" ).html(frm);
+		$( "#info_dialog" ).dialog({
+			width: 520,
+			modal: true,
+			title: "Editing card: "+ref
+		});
+	}
+
+	/**
+	 * renderFrom
+	 * Create & append a list of form fields to a provided form. Form configurtion is grabbed from
+	 * the attributes section of the workflow.json. If cur_data is provided the script will attempt
+	 * to prepopulate the feilds generated.
+	 *
+	 * @param form Form Object (jQuery)
+	 * @param feilds Array of fields to add to form.
+	 * @param cur_data Object containing any data that may want to be set in to fields.
+	 * @return form object populated with specified fields.
+	 */
+	this.ui.renderForm = function(form, fields, cur_data){
+		//For each field.
+		for(var i in fields){
+			//Grab a copy of the attributes config (specified in workflow.json)
+			var field = Object.create(_this.workflow.attributes[fields[i]]);
+			//Set in attributes id & use id as name if one is not provided
+			field.id = fields[i];
+			field.name = (typeof field.name !='undefined') ? field.name : fields[i];
+			//If current data exists, attempt to prefill value
+			if(typeof cur_data != 'undefined'){
+				field.value = (typeof cur_data[fields[i]] == 'undefined') ? '' : cur_data[fields[i]];
+			}
+			//If value is empty, add default if one is set.
+			if(typeof field.value == 'undefined' || field.value==''){
+				field.value = (typeof field.default_value != 'undefined') ? field.default_value : '';	
+			}
+			//Templates for textarea / input box differ slighly
+			if(field.type=='textarea'){
+				form.append(tpl.template("<div> <span>{name}:</span> <textarea name='{id}'>{value}</textarea></div>", field));
+			}else{
+				form.append(tpl.template("<div> <span>{name}:</span> <input name='{id}' value='{value}'/></div>", field));
+			}
+		}
+		//Add save button
+		frm.append($("<input type='submit' value='Save' class='button' />"));
+
+		//return populated form object
+		return form;
 	}
 
 	/**
@@ -568,3 +624,26 @@ $(function() {
 	//Run Cards
 	cards.init();
 });
+
+// Author:  Jacek Becela
+// Source:  http://gist.github.com/399624
+// License: MIT
+
+jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
+  return this.each(function(){
+    var clicks = 0, self = this;
+    jQuery(this).click(function(event){
+      clicks++;
+      if (clicks == 1) {
+        setTimeout(function(){
+          if(clicks == 1) {
+            single_click_callback.call(self, event);
+          } else {
+            double_click_callback.call(self, event);
+          }
+          clicks = 0;
+        }, timeout || 300);
+      }
+    });
+  });
+}

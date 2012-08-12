@@ -9,14 +9,14 @@
  */
 class Cards {
 	//constraints
-	private $constraints;
+	private $workflow;
 
 	//Setup controller by initiating CardStore and Auth providers.
 	public function __construct(){
 		CardStore::load(Config::get('datastore'));
 		Auth::load(Config::get('auth_method'));
-		//Load in constraints
-		$this->constraints = json_decode(file_get_contents("config/constraints.json"));
+		//Load in workflow config
+		$this->workflow = json_decode(file_get_contents("config/workflow.json"));
 	}
 
 	/**
@@ -57,13 +57,13 @@ class Cards {
 
 	/**
 	 * settings 
-	 * Return JSON defining available products & constraints
+	 * Return JSON defining available products, workflow & other config options
 	 * @return JSON Object
 	 */
 	public function settings(){
 		$data = array();
 		$data['products'] = CardStore::listProducts();//Get from CardStore driver.
-		$data['constraints'] = $this->constraints;
+		$data['workflow'] = $this->workflow;
 		$data['refresh_time']	= Config::get("refresh_time");
 		$data['default_product'] = Config::get("default_product");
 

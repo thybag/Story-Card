@@ -85,6 +85,12 @@
 	.card_data div {min-height:20px;}
 	.card_data div span {width:142px;display:inline-block;}
 	.card_data div textarea {width:98%;min-height:50px;}
+
+	.card_edit div {padding: 1px 0;}
+	.card_edit div span {width:180px;}
+	.card_edit div input {width:298px;}
+
+
 	.button {
 		padding: 8px;
 		background-color: #4C6591;

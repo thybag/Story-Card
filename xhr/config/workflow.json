@@ -1,0 +1,46 @@
+{
+    "attributes":{
+         "title":   {"name":"Title", "type":"text"},
+         "story":   {"name":"Story", "type":"textarea"},
+         "acceptance": {"name":"Acceptance criteria", "type":"textarea"},
+         "priority":   {"name":"Priority","type":"text", "default_value":"0"},
+         "estimate":   {"name":"Estimated Time: (hours)","type":"text"},
+
+         "product": {"type":"select" },
+         "sprint":  {"type":"select" },
+         "status":  {"type":"select", "default_value":"Backlog"},
+
+         "time_spent": {"name":"Time Spent (hours)", "type":"text"},
+         "completion_notes": {"name":"Work Summary", "type":"textarea"}
+    },
+    "Statuses": {
+        "Backlog": {
+            "title": "Sprint Backlog",
+            "display": "column"
+        },
+        "In Progress": {
+            "display": "row"
+        },
+        "Blocked": {
+            "display": "row"
+        },
+        "QA": {
+            "display": "row",
+            "request": ["time_spent", "completion_notes"]
+        },
+        "Done": {
+            "display": "row",
+            "limit_drag_to": [
+                "QA"
+            ]
+        },
+        "Derpricated": {
+            "display": "half_row"
+        },
+        "Superseeded": {
+            "display": "half_row"
+        }
+    },
+    "new_card": ["title","story","acceptance","priority","estimate"],
+    "edit_card": ["title","story","acceptance","priority","estimate","time_spent","completion_notes"]
+}
