@@ -6,7 +6,7 @@ A highly customisable interactive Story Card dashboard. Uses the [Flight](http:/
 
 1. Copy `xhr/config/config.sample.php` to `xhr/config/config.php` and edit following the prompts.
 
-2. For Sharepoint drop WDSL file for the Sharepoint lists to poll for cards. This location should be reflected in the `xhr/config/config.php` file in the `sharepoint.wsdl` field.
+2. Drop a WDSL file for the Sharepoint lists to poll for cards - this can normally be obtained by visiting `sharepoint.url/subsite/_vti_bin/Lists.asmx?WSDL`. This location should be reflected in the `xhr/config/config.php` file in the `sharepoint.wsdl` field.
 
 3. Point a web server to the directory and visit this with your browser - you should now be good to go!
 
@@ -40,7 +40,7 @@ A highly customisable interactive Story Card dashboard. Uses the [Flight](http:/
 
 ## Credits
 
-Story-Card was made possible varitey of open source packages & scripts.
+Story-Card was made possible variety of open source packages and scripts.
 
 ### JavaScript
 
