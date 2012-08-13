@@ -131,3 +131,24 @@
 		background-color:#ffd2d4;/*red: ffd2d4 / yellow: fefccb; */
 		border:solid 1px #d18a92;/*red:d18a92 yellow; #e7ec74*/
 	}
+
+
+	@media only screen and (min-width: 0px) and (max-width: 520px) {
+		body {background-color:#fff;}
+		.container.column, .container.row, .container.half_row {
+			width:96% !important;
+			margin: 2px 5px !important;
+			float:left;
+
+		}
+		.topbar, .top span {
+			display: none;
+		}
+		.top .select2-container {width:100% !important; float:right;}
+		.top select {width:100%;}
+		.top {height:60px;}
+		.top form{float:right;width:40%;}
+		ul:empty {display:none;}
+
+		li.card {width:95%;height:auto;min-height:0;}
+	}

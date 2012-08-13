@@ -41,7 +41,7 @@
 <body>
 	<div class='top'>
 		<form id='options' method='get' >
-			Product: <select id='product_selector' name='product' style="width:280px" onchange='cards.reload(this.value);'></select>
+			<span>Product:</span> <select id='product_selector' name='product' style="width:280px" onchange='cards.reload(this.value);'></select>
 			<select id='sprints' onchange='cards.reload(document.getElementById("product_selector").value,this.value);'></select>
 		</form>
 		<h1>Story Cards</h1>
