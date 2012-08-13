@@ -393,6 +393,9 @@
 	 * @param event Click event.
 	 */
 	this.ui.renderEditDialog = function(event){
+		//Don't pop up if a user isn't permissioned to edit
+		if(_this.settings.authed==0) return;
+
 		var ref = $(this).attr('data-ref');
 		//Get current card from store
 		var cur_data = _this.cardStore[ref];

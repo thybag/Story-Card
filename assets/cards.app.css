@@ -141,14 +141,29 @@
 			float:left;
 
 		}
-		.topbar, .top span {
+		.top span, #cpanel span {
 			display: none;
 		}
+		#cpanel .action {width:27%;float:left;}
 		.top .select2-container {width:100% !important; float:right;}
 		.top select {width:100%;}
-		.top {height:60px;}
+		.top {height:55px;}
 		.top form{float:right;width:40%;}
-		ul:empty {display:none;}
-
+		ul:empty {height:20px;}
+		ul {min-height:0;}
 		li.card {width:95%;height:auto;min-height:0;}
+
+		/* jQuery UI nice-en-er (kinda - basically just make dialogs useable on mobile displays) */
+		div.ui-dialog {
+			width:100% !important;
+			left:0 !important;
+			top:0 !important;
+			border-radius:0;
+			padding:0;
+		}
+		div.ui-dialog-titlebar{
+			border-radius:0;
+			padding:3px;
+		}
+		div.ui-dialog div input {width:100%;}
 	}
