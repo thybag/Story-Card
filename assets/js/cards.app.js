@@ -196,7 +196,7 @@
 	this.cardRefresh = function(){
 		var pro = _this.settings.query_options['product'];
 		var s = _this.settings.query_options['sprint'];
-		$.get('xhr/list?product='+pro+'&sprint='+s, function(data){
+		$.get('xhr/list?product='+pro+'&sprint='+s+'&after='+_this.loaded , function(data){
 				var d = JSON.parse(data);
 				_this.loaded = d.loaded;
 				_this.cardStore = d.data;
