@@ -106,10 +106,10 @@ class SharePointStore extends StoreAbstract{
 	 * @param $sprint Sprint Number || 0/All
 	 * @return array of StoryCard Objects. (array index's must match object Id's)
 	 */
-	public function getCardsFor($product,$sprint=0){
+	public function getCardsFor($product,$sprint='all'){
 		//A limit of a 150 cards is set, although this can be raised if needed.
 		//To ensure the backlog displays in a sane manner results should be ordered by Priority in descending order.
-		if($sprint == 0){
+		if($sprint == 'all'){
 			//If sprint is 0, return all cards for product regardless of sprint 
 			$data = $this->backlog->query()
 				->where('Product','=',$product)

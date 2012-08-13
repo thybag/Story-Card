@@ -79,10 +79,10 @@ class Cards {
 		
 		//Set defaults
 		$product = Config::get("default_product");
-		$sprint = '0';
+		$sprint = 'all';
 		//Override is alternative is provided
 		if(isset($_GET['product'])){$product = $_GET['product'];}
-		if(isset($_GET['sprint'])){$sprint = (int)$_GET['sprint'];}
+		if(isset($_GET['sprint'])){ $sprint = (strtolower($_GET['sprint'])!='all') ? (int)$_GET['sprint'] : 'all';}
 		//Get list of storycards from cardstore driver.
 		$data = CardStore::getCardsFor($product, $sprint);
 
