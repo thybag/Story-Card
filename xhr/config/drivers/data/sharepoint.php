@@ -86,8 +86,24 @@ class SharePointStore extends StoreAbstract{
 	 * @return CardObject on success | null on fail
 	 */
 	public function addCard($data){
+
+		//Sharepoint doesnt survive bad types, so fix em
+		if(isset($data['priority'])) $data['priority'] = ($data['priority']=='?') ? (int) $data['priority'] : '';
+		if(isset($data['sprint']))   $data['sprint'] = (int) $data['sprint'] ;
+
+		//Lookup product id (as Product is a lookup type field)
+		$product = $this->sp->query("Products")->where("Title","=",$data['product'])->get();
+		$product = $product[0];
+
+		//If product isn't found, fail.
+		if($product == null) return null;
+		
+		//Else setup product with correct value
+		$data['product'] = "{$product->ID};#{$data['product']}";
+		
 		//Save new data
-		$card = $this->backlog->create($data);
+		$card = $this->backlog->create($this->remap($data));
+
 		if($card!==null){
 			//reMap $card object to fit systems internal data model 
 			return $this->reMap($card[0], true);
