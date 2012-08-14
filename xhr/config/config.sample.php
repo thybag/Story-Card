@@ -41,6 +41,7 @@
 			'acceptance'=> 'Acceptance',
 			'status'	=> 'Status',
 			'sprint'	=> 'Sprint',
+			'product'	=> 'Product',
 			//Optional cols: Comment out to disable
 			'estimate'	=> 'Story_x0020_Points',
 			'time_spent'=> 'Actual_x0020_Time',
