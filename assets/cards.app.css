@@ -78,6 +78,7 @@
 	.card .inner ul {list-style:disc;}
 	.card .inner li {list-style:disc;margin-left:18px;width:210px;}
 	.card .inner div {padding:2px;}
+	.card .inner span {font-size:1em;margin:0;font-weight:inherit;color:inherit;}
 
 	#product_selector {width:220px;}
 
