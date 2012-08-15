@@ -292,7 +292,7 @@
 		//Hook up click handler.
 		//Flip on single
 		//Open edit on double
-		card.single_double_click( _this.ui.flipCard, _this.ui.renderEditDialog, 180);
+		card.single_double_click( _this.ui.flipCard, _this.ui.renderEditDialog);
 
 		//Append Card to status drop zone
 		$("ul.connectedSortable[data-type='"+data.status+"']").append(card);
@@ -383,7 +383,8 @@
 			modal: true,
 			title: "Additional information required"
 		});
-
+		//Invoke snazzy editor
+		p.invokeEditor();
 	}
 
 	/**
@@ -409,6 +410,8 @@
 			modal: true,
 			title: "Editing card: "+ref
 		});
+		//Invoke snazzy editor
+		p.invokeEditor();
 	}
 
 	/**
@@ -428,6 +431,8 @@
 			modal: true,
 			title: "Adding new Story"
 		});
+		//Invoke snazzy editor
+		p.invokeEditor();
 	}
 
 	/**
@@ -704,6 +709,25 @@
 		current.after(n);
 		//Remove the old one
 		current.remove();
+	}
+
+	p.invokeEditor = function(){
+		$('textarea').html5_editor({
+			 'fix-toolbar-on-top': false,
+			 'toolbar-items': [
+						[
+							['bold', 'B', 'Bold'],
+							['italic', 'I', 'Italicize'],
+							['underline', 'U', 'Underline'],
+							['strike', 'Abc', 'Strikethrough'],
+							['remove', 'normal', 'Remove Formating'],
+							['link', 'Link', 'Insert Link'],
+							['video', 'Video', 'Insert Video'],
+							['ul', 'ul', 'Unordered list'],
+							['ol', 'li', 'Ordered list']
+						],
+					]
+			 });
 	}
 
 	//Make cards accessible in the global namespace

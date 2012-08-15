@@ -49,6 +49,7 @@ Story-Card was made possible variety of open source packages and scripts.
  * Select2 - http://ivaynberg.github.com/select2/
  * jQuery Flip - http://lab.smashup.it/flip/
  * jQuery Single Double Click - https://gist.github.com/399624
+ * jQuery HTML5 Editor - https://github.com/nunobaldaia/html5_editor
 
 ### PHP
 

@@ -132,6 +132,54 @@
 		border:solid 1px #d18a92;/*red:d18a92 yellow; #e7ec74*/
 	}
 
+	/*Editor */
+	.html5-editor-container {
+		position: relative;
+		padding: 0 10px;
+		border: 1px solid #c9d0d6;
+	   border-radius: 3px;
+	   background-color: #fff;
+	}
+
+	.html5-editor-container .html5-editor {
+		min-height: 60px;
+		margin:0px;
+		padding: 0 2px;
+	}
+	.html5-editor-container .toolbar {
+		background-color:#eee;
+	}
+	.html5-editor-container ul,.html5-editor-container ol{
+		min-height:0;float:none;
+		padding-left:25px;
+	}
+	.html5-editor-container ul li{
+		list-style-type: disc;
+	}
+	.html5-editor-container ol li{
+		list-style-type: decimal;
+	}
+	.html5-editor-container .toolbar ul {padding-left:0px;}
+	.html5-editor-container .toolbar ul li { display:inline-block;}
+	.html5-editor-container .toolbar a {
+	  font-family: 'Times New Roman', serif;
+	  font-size: 12px;
+	  text-decoration: none;
+	  line-height: 21px;
+	  padding: 4px 5px;
+	  text-shadow: 0 1px 1px #fff;
+	  color: #222;
+	}
+	.html5-editor-container .toolbar a:hover {
+		background-color: #c9d0d6;
+	}
+
+.html5-editor-container .toolbar .code {font-family: Fixed, Courier, monospace;}
+.html5-editor-container .toolbar .bold {font-weight: bold;}
+.html5-editor-container .toolbar .italic {font-style: italic;}
+.html5-editor-container .toolbar .underline {text-decoration: underline;}
+.html5-editor-container .toolbar .strike {text-decoration: line-through;font-variant: small-caps;}
+	/* Mobile view */
 
 	@media only screen and (min-width: 0px) and (max-width: 520px) {
 		body {background-color:#fff;}
