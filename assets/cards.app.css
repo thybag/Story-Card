@@ -78,7 +78,7 @@
 		padding:3px;
 		overflow:hidden;
 	}
-	.card .inner ul {list-style:disc;}
+	.card .inner ul, .card .inner ol {list-style:disc;margin-bottom:4px;min-height:0;}
 	.card .inner li {list-style:disc;margin-left:18px;width:210px;}
 	.card .inner div {padding:2px;}
 	.card .inner span {font-size:1em;margin:0;font-weight:inherit;color:inherit;}

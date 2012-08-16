@@ -64,6 +64,10 @@ class SharePointStore extends StoreAbstract{
 	 * @return true|false success of save
 	 */
 	public function updateCard($id,$data){
+		
+		//Ensure priority is an int
+		if(isset($data['priority'])) $data['priority'] = ($data['priority']=='?') ? (int) $data['priority'] : '';
+		
 		//Make data match db/sharepoint schema using build in remap function
 		$data = $this->remap($data);
 		//invoke sharepoint update method with given data.
@@ -79,6 +83,7 @@ class SharePointStore extends StoreAbstract{
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
     public function setup(){}
+    
 	/**
 	 * Add Card
 	 * Add a new StoryCard
