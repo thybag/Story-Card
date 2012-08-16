@@ -8,8 +8,6 @@
  */
  (function(){
 
-	//Internal reference to cards object.
-	var _this = this;
 	//DataStores
 	this.cardStore = {};
 	this.workflow = {};
@@ -21,6 +19,13 @@
 		"refresh_time": 5000,
 		query_options: {product:"",sprint:"all"}
 	};
+
+	//Setup private vars
+	var _this = this;//Internal reference to cards object.
+	var p = {};//private methods
+	var url = this.settings.query_options;//Quick access to url options
+
+
 
 	/**
 	 * Initalise the StoryCard system
@@ -121,15 +126,15 @@
 		qo = _this.settings.query_options;
 		var spr = 'all';
 		var pro = qo.product;
-		if(typeof sprint != 'undefined') spr = sprint;
-		if(typeof product != 'undefined') pro = product;
+		if(typeof sprint != 'undefined') spr = encodeURIComponent(sprint);
+		if(typeof product != 'undefined') pro = encodeURIComponent(product);
 		//Update query options
 		qo.product = pro;
 		qo.sprint = spr;
 		//Update URL (if we can)
-		window.history.pushState({}, document.title , '?product='+encodeURIComponent(pro)+'&sprint='+spr);
+		window.history.pushState({}, document.title , '?product='+pro+'&sprint='+spr);
 		//setup new card display
-		$.get('xhr/list?product='+encodeURIComponent(pro)+'&sprint='+spr, _this.setup);
+		$.get('xhr/list?product='+pro+'&sprint='+spr, _this.setup);
 	}
 
 	/**
@@ -541,11 +546,11 @@
 		$("#info_dialog").dialog('close');
 		//Add additional data (default status, current product and current sprint)
 		var card_data = $(frm).serialize();
-		card_data += '&product='+encodeURIComponent(_this.settings.query_options.product)+'&sprint='+encodeURIComponent(_this.settings.query_options.sprint);
+		card_data += '&product='+url.product+'&sprint='+url.sprint;
 		card_data += '&status='+_this.workflow.attributes['status'].default_value;
 
 		//Submit data via AJAX
-		$.post("xhr/addCard", card_data, function(data){
+		$.post("xhr/addCard?product="+url.product, card_data, function(data){
 			//hide loader
 			$("#indicator").hide();
 			//If somthing goes wrong
@@ -580,7 +585,7 @@
 		//hide dialog
 		$("#info_dialog").dialog('close');
 		//Submit data
-		$.post("xhr/updateCard", $(frm).serialize(), function(data){
+		$.post("xhr/updateCard?product="+url.product, $(frm).serialize(), function(data){
 			//Hide loader when data is returned & parse json returned
 			$("#indicator").hide();
 			if(data==0){
@@ -618,7 +623,7 @@
 	 	if(!_this.validateConstraints(ref,new_status)) return;
 
 		//Tell ajax to update the datastore
-		$.post("xhr/move", { "id": ref, "status": new_status}, function(data){
+		$.post("xhr/move?product="+url.product, { "id": ref, "status": new_status}, function(data){
 			//Hide loader
 			$("#indicator").text("Loading..").hide();
 			if(data=='0'){
@@ -653,7 +658,7 @@
 	 	Private Methods. Internal utility methods
 	
 	***********************/
-	var p = {};
+	
 
 	/**
      * revertMove
