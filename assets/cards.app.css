@@ -27,16 +27,19 @@
 
 	 #todo {width:260px;overflow-y:auto;overflow-x:hidden;height:95%;}
 	 
-	 .container {float:right;margin:5px 5px 0 0;width:1370px;border:solid 1px black; background-color:#eef3fb;}
+	 .container, .greeting {border:solid 1px black; background-color:#eef3fb;}
 	 .container span {margin:4px;display:block;font-size:1.2em;color:#243045;font-weight:bold;}
 	 
 	 #options{ float:right;font-size:1.2em;}
 	 #options select {padding:4px;}
 	 #options span a{color:#fff;margin-right:8px;}
-	 .container.column {width:266px; height:92%;float:left;margin-left:5px;}
+
+	 .container.row {float:right;margin:5px 5px 0 0; }
+	 .container.column {width:266px; height:92%;float:left;margin:5px 0 0 5px;}
+	 .container.half_row {margin:5px 5px 0 0;float:right;}
 	 .container.row ul,.container.column ul,.container.half_row ul{width:100%;}
 
-	 .container.half_row {margin-left:0;}
+	 .greeting {margin:20px;padding:20px;}
 	/* #qa,#done,#blocked,#in_progress {width:100%;}*/
 	 
 	 #dialog input{float:right;}

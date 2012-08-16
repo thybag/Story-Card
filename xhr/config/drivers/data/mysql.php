@@ -108,7 +108,7 @@ class MysqlStore extends StoreAbstract{
 	public function removeCard($id){	}
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
-
+    public function setup(){}
 	/**
 	 * List products
 	 * Returns an array of all products available to view.

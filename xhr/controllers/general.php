@@ -33,6 +33,7 @@ abstract class StoreAbstract
     abstract public function removeCard($id);
     abstract public function addProduct($title,$data);
     abstract public function addSprint($identifier,$data);
+    abstract public function setup();
 
     //Remap (utility method)
     //Convert system attributes to datastore attributes

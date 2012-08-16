@@ -47,6 +47,7 @@
 		$.get('xhr/settings', function(data){
 				//Proccess data
 				var d = JSON.parse(data);
+				if(d.setup == true) return _this.newSetup(d);
 				//set workflow constraints
 				_this.workflow = d.workflow;
 				//Get other options
@@ -67,6 +68,13 @@
 		});	
 	}
 
+	this.newSetup = function(d){
+		$("#indicator").hide();
+		var greeting = tpl.template("<div class='greeting'><h1>Thankyou for installing Story-Card</h1><p>{message}</p></div>",d);
+		$('#card_container').append(greeting);
+
+
+	}
 	/**
 	 * Setup
 	 * Display a new set of storycards within the interface

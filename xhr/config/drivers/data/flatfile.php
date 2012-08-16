@@ -18,7 +18,6 @@ class FlatFileStore extends StoreAbstract{
 	public function __construct(){
 		//If user is logged in access sharepoint using their credentals
 		$this->cache = Config::get('cache.dir').'/cards/';
-		if(!file_exists($this->cache)) mkdir($this->cache,true);
 	}	
 
 	/**
@@ -34,7 +33,7 @@ class FlatFileStore extends StoreAbstract{
 			$raw = file_get_contents($this->cache.'products.txt');
 			return json_decode($raw);
 		}else{
-			return array();
+			return null;
 		}
 	}
 
@@ -64,6 +63,21 @@ class FlatFileStore extends StoreAbstract{
 	public function removeCard($id){}
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
+
+
+    public function setup(){
+    	//If not already setup
+    	if(!file_exists($this->cache.'products.txt')){
+    		//Create directory if needed
+    		if(!file_exists($this->cache)) mkdir($this->cache,true);
+    		//Setup products with default one created.
+    		$products = array(Config::get('default_product'));
+    		file_put_contents($this->cache.'products.txt',json_encode($products));
+
+    		return "A flatfile database has been automatically created for you. Just hit refresh to to get started.";
+    	}
+    	return "This Story-Card installtion already appears to be complete.";
+    }
 
 	/**
 	 * Add Card

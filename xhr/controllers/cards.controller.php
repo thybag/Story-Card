@@ -61,13 +61,31 @@ class Cards {
 	 * @return JSON Object
 	 */
 	public function settings(){
+
 		$data = array();
-		$data['products'] = CardStore::listProducts();//Get from CardStore driver.
-		$data['workflow'] = $this->workflow;
-		$data['refresh_time']	= Config::get("refresh_time");
-		$data['default_product'] = Config::get("default_product");
+
+		$products = CardStore::listProducts();//Get from CardStore driver.
+
+		//If product is null, initate system setup
+		if($products === null){
+			$data = $this->setup();
+		}else{
+			$data['products'] = $products;
+			$data['workflow'] = $this->workflow;
+			$data['refresh_time']	= Config::get("refresh_time");
+			$data['default_product'] = Config::get("default_product");
+		}
 
 		echo json_encode($data);
+	}
+
+	private function setup(){
+		$message = CardStore::setup();
+		$data = array();
+		$data['setup'] = true;
+		$data['welcome'] = 'Thankyou for using Card-Store';
+		$data['message'] = $message;
+		return $data;
 	}
 
 	/**

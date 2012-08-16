@@ -45,7 +45,7 @@ class SharePointStore extends StoreAbstract{
 	 */
 	public function listProducts(){
 		//List products alphabetically
-		$data = $this->sp->query("Products")->sort("Title","ASC")->get();;
+		$data = $this->sp->query("Products")->sort("Title","ASC")->get();
 		//Convert results in to flat array
 		$products = array();
 		foreach($data as $product){
@@ -78,7 +78,7 @@ class SharePointStore extends StoreAbstract{
 	public function removeCard($id){}
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
-
+    public function setup(){}
 	/**
 	 * Add Card
 	 * Add a new StoryCard

@@ -29,11 +29,17 @@ class CardStore{
 	public static function removeCard($id){
 		return self::$store->removeCard($id);
 	}
-	public static function moveCard($id,$status){
-		return self::$store->moveCard($id,$status);
+	public static function setup(){
+		return self::$store->setup();
 	}
 	public static function listProducts(){
 		return self::$store->listProducts();
+	}
+	public static function addProduct($title,$data){
+		return self::$store->addProduct($title,$data);
+	}
+	public static function addSprint($identifier,$data){
+		return self::$store->addSprint($identifier,$data);
 	}
 
 }
