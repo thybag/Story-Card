@@ -62,7 +62,8 @@ class FlatFileStore extends StoreAbstract{
 	}
 	//Stubs
 	public function removeCard($id){}
-
+	public function addProduct($title,$data){}
+    public function addSprint($identifier,$data){}
 
 	/**
 	 * Add Card
@@ -104,19 +105,5 @@ class FlatFileStore extends StoreAbstract{
 		}else{
 			return array();
 		}
-
-
-	}
-
-	/**
-	 * moveCard
-	 * Save a story cards new status.
-	 *
-	 * @param $id ID of card
-	 * @param $status New status of card
-	 * @return true|false
-	 */
-	public function moveCard($id, $status){
-		return $this->updateCard($id, array('status'=>$status));
 	}
 }

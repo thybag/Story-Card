@@ -121,7 +121,7 @@ class Cards {
 			$id = (int) $_POST['id'];
 			$status =  $_POST['status'];
 			//Send data to CardStore
-			if(CardStore::moveCard($id,$status) == true){
+			if(CardStore::updateCard($id, array('status'=>$status))){
 				//If save went ok, update timestamps and return new one to browser
 				$this->updateTimeStamp();
 				$this->lastchange();

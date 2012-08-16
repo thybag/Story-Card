@@ -28,10 +28,11 @@ abstract class StoreAbstract
     //abstract methods
 	abstract public function getCardsFor($product,$sprint=0);
     abstract public function listProducts();
-    abstract public function moveCard($id,$status);
     abstract public function addCard($data);
     abstract public function updateCard($id,$data);
     abstract public function removeCard($id);
+    abstract public function addProduct($title,$data);
+    abstract public function addSprint($identifier,$data);
 
     //Remap (utility method)
     //Convert system attributes to datastore attributes

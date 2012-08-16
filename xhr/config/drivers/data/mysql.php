@@ -106,6 +106,8 @@ class MysqlStore extends StoreAbstract{
 
 	//stub
 	public function removeCard($id){	}
+	public function addProduct($title,$data){}
+    public function addSprint($identifier,$data){}
 
 	/**
 	 * List products
@@ -158,18 +160,4 @@ class MysqlStore extends StoreAbstract{
 		//return array of story cards
 		return $data;
 	}
-
-	/**
-	 * Move Card
-	 * Save status of given story card
-	 *
-	 * @param $id ID of card
-	 * @param $status New status of card
-	 * @return true|false
-	 */
-	public function moveCard($id,$status){
-		//Pass to update? move card should maybe be depricated?
-		return $this->updateCard($id, array('status'=>$status));	
-	}
-
 }

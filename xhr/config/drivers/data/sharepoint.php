@@ -76,7 +76,8 @@ class SharePointStore extends StoreAbstract{
 	}
 	//Stubs
 	public function removeCard($id){}
-
+	public function addProduct($title,$data){}
+    public function addSprint($identifier,$data){}
 
 	/**
 	 * Add Card
@@ -161,23 +162,5 @@ class SharePointStore extends StoreAbstract{
 
 		//return data (id=>carddata)
 		return $jsondata;		
-	}
-
-	/**
-	 * moveCard
-	 * Save a story cards new status.
-	 *
-	 * @param $id ID of card
-	 * @param $status New status of card
-	 * @return true|false
-	 */
-	public function moveCard($id, $status){
-		//Save result of move
-		if($this->backlog->update($id, array('Status'=>$status)) != null){
-			//return true if data saved correctly
-			return true;
-		}else{
-			return false;
-		}
 	}
 }
