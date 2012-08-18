@@ -12,6 +12,7 @@
 	this.cardStore = {};
 	this.workflow = {};
 	this.loaded = '0';	// Last loaded time
+
 	//Settings
 	this.settings = {
 		"authed":0,
@@ -20,12 +21,14 @@
 		query_options: {product:"",sprint:"all"}
 	};
 
+	//Subsets
+	this.ui = {};
+	this.actions = {};
+
 	//Setup private vars
 	var _this = this;//Internal reference to cards object.
 	var p = {};//private methods
 	var url = this.settings.query_options;//Quick access to url options
-
-
 
 	/**
 	 * Initalise the StoryCard system
@@ -68,13 +71,18 @@
 		});	
 	}
 
+	/**
+	 * First time setup
+	 * Display thanks for installing plus some info
+	 *
+	 * @param d JSON info on install
+	 */
 	this.newSetup = function(d){
 		$("#indicator").hide();
 		var greeting = tpl.template("<div class='greeting'><h1>Thankyou for installing Story-Card</h1><p>{message}</p></div>",d);
 		$('#card_container').append(greeting);
-
-
 	}
+
 	/**
 	 * Setup
 	 * Display a new set of storycards within the interface
@@ -229,8 +237,6 @@
 	 	UI Methods. Methods relating to user interface components.
 	
 	***********************/
-
-	this.ui = {};
 
 	/**
 	 * renderMain
@@ -506,8 +512,6 @@
 	
 	***********************/
 
-	this.actions = {};
-
 	/**
 	 * login
 	 * Called when a user submits a login request from the login dialog. Uses ajax to attempt to authenticate the user.
@@ -519,10 +523,18 @@
 		$("#indicator").show();
 		//Submit data
 		$.post("xhr/login", { "username": fo.elements['username'].value, "password": fo.elements['password'].value },function(data){
-			//Reload Card data in light of authoristion attempt
-			_this.reload();
-			//Close dialog
-			$("#dialog").dialog('close');
+			//Was autentication successful?
+			if(data==0){
+				//If no, show error.
+				$("#dialog").find('.errorBox').css('display','block').text("Incorrect username or password.");
+			}else{
+				//If yes, reload with editable UI.
+				_this.reload();
+				//Hide error
+				$("#dialog").find('.errorBox').css('display','none');
+				//and finally close dialog
+				$("#dialog").dialog('close');
+			}	
 		});
 		//Stop form submitting
 		return false;
@@ -653,6 +665,7 @@
 	this.actions.toggleControls = function(){
 		$('#cpanel').toggle();
 	}
+
 	/**
 	 * launchNewCardDialog
 	 * launch the add new card dialog
@@ -724,6 +737,10 @@
 		current.remove();
 	}
 
+	/**
+	 * Invoke rich text editor
+	 * Converts all textareas in form to editable regions
+	 */
 	p.invokeEditor = function(){
 		$('textarea').html5_editor({
 			 'fix-toolbar-on-top': false,
@@ -736,8 +753,8 @@
 							['remove', 'normal', 'Remove Formating'],
 							['link', 'Link', 'Insert Link'],
 							['video', 'Video', 'Insert Video'],
-							['ul', 'ul', 'Unordered list'],
-							['ol', 'li', 'Ordered list']
+							['ul', 'Bullets', 'Unordered list'],
+							['ol', 'Numbered', 'Ordered list']
 						],
 					]
 			 });

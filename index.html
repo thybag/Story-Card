@@ -67,9 +67,10 @@
 
 	<div id="dialog" title="Login" style='display:none;'>
 		<form onSubmit='return cards.actions.login(this);'>
-			
+			<div class='errorBox' style='display:none;'></div>
 				<div>Username: <input type='text' name='username' /></div>
 				<div>Password: <input type='password' name='password' /></div>
+			
 			
 			<input type='submit' name='Login' class='button'/>
 		</form>

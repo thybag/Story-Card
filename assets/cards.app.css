@@ -134,6 +134,7 @@
 		border-radius:4px;
 		background-color:#ffd2d4;/*red: ffd2d4 / yellow: fefccb; */
 		border:solid 1px #d18a92;/*red:d18a92 yellow; #e7ec74*/
+		height:auto !important;
 	}
 
 	/*Editor */

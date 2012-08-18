@@ -17,7 +17,7 @@ class FlatFileStore extends StoreAbstract{
 	 */
 	public function __construct(){
 		//If user is logged in access sharepoint using their credentals
-		$this->cache = Config::get('cache.dir').'/cards/';
+		$this->cache = Config::get('cache.dir').'/sc/';
 	}	
 
 	/**
@@ -68,8 +68,10 @@ class FlatFileStore extends StoreAbstract{
     public function setup(){
     	//If not already setup
     	if(!file_exists($this->cache.'products.txt')){
+
+    		echo $this->cache;
     		//Create directory if needed
-    		if(!file_exists($this->cache)) mkdir($this->cache,true);
+    		if(!file_exists($this->cache)) mkdir($this->cache,0775,true);
     		//Setup products with default one created.
     		$products = array(Config::get('default_product'));
     		file_put_contents($this->cache.'products.txt',json_encode($products));
