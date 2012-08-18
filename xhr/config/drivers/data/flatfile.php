@@ -69,7 +69,6 @@ class FlatFileStore extends StoreAbstract{
     	//If not already setup
     	if(!file_exists($this->cache.'products.txt')){
 
-    		echo $this->cache;
     		//Create directory if needed
     		if(!file_exists($this->cache)) mkdir($this->cache,0775,true);
     		//Setup products with default one created.
