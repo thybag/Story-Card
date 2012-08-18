@@ -55,6 +55,7 @@ Story-Card was made possible variety of open source packages and scripts.
 
  * Flight Micro-framework - http://flightphp.com/
  * SharePointAPI - https://github.com/thybag/PHP-SharePoint-Lists-API
+ * htmLawed -http://code.google.com/p/htmlawed/
 
 ### Graphics
 

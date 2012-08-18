@@ -483,10 +483,13 @@
 			}
 			//Templates for textarea / input box differ slighly
 			if(field.type=='textarea'){
-				form.append(tpl.template("<div> <span>{name}:</span> <textarea name='{id}'>{value}</textarea></div>", field));
+				temp_tpl = tpl.template("<div> <span>{name}:</span> <textarea name='{id}'></textarea></div>", field);
+				$(temp_tpl).find('textarea').val(field.value);
 			}else{
-				form.append(tpl.template("<div> <span>{name}:</span> <input name='{id}' value='{value}'/></div>", field));
+				temp_tpl = tpl.template("<div> <span>{name}:</span> <input name='{id}' value='{value}'/></div>", field);
 			}
+			
+			form.append(temp_tpl);
 		}
 		//Add save button
 		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='button' />"));
@@ -752,7 +755,6 @@
 							['strike', 'Abc', 'Strikethrough'],
 							['remove', 'normal', 'Remove Formating'],
 							['link', 'Link', 'Insert Link'],
-							['video', 'Video', 'Insert Video'],
 							['ul', 'Bullets', 'Unordered list'],
 							['ol', 'Numbered', 'Ordered list']
 						],

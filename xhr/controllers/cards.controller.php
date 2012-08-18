@@ -184,6 +184,12 @@ class Cards {
 		//get id
 		$id = $_POST['id'];
 		unset($_POST['id']);
+
+		//Prevent people sneaking in JS
+		foreach($_POST as $key=>$val){
+			$_POST[$key] = htmLawed($val,array('keep_bad'=>0,'elements'=>'* -script -object'));
+		}
+
 		//Call save on datasoruce
 		if(CardStore::updateCard($id, $_POST)){
 			//if successful return new timestamp
@@ -206,6 +212,11 @@ class Cards {
 	public function addCard(){
 		//If user is not authenticated
 		if(!isset($_SESSION['sc_auth'])) return 0;
+
+		//Prevent people sneaking in JS
+		foreach($_POST as $key=>$val){
+			$_POST[$key] = htmLawed($val,array('keep_bad'=>0,'elements'=>'* -script -object'));
+		}
 
 		//Call save on datastore
 		$newCard = CardStore::addCard($_POST);

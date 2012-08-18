@@ -12,13 +12,14 @@
 session_start();
 //Start flight
 require 'flight/Flight.php';
+require 'lib/htmLawed.php';
 //Load required classes
 require 'controllers/general.php';
-include('config/config.php');//get config
-include('controllers/cards.controller.php');
+include 'config/config.php' ;//get config
+require 'controllers/cards.controller.php';
 //Get datastores (using drivers specified in config)
-include('model/CardStore.php');
-include('model/auth.php');
+require 'model/CardStore.php';
+require 'model/auth.php';
 //Setup Obj
 $cards = new Cards();
 //Do routing
