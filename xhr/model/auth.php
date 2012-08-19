@@ -12,7 +12,11 @@ class Auth{
 	private static $auth;
 	//load auth driver
 	public static function load($auth_method){
-		include('config/drivers/auth/'.$auth_method.'.php');
+		//If file cannot be loaded, handle error.
+		if((include'config/drivers/auth/'.$auth_method.'.php')==false){
+			echo '{"setup":true, "error":true, "message":"There doesn\'t appear to be an auth driver called <strong>'.$auth_method.'</strong> in /config/drivers/auth/. Are you sure you have typed it correctly?"}';
+			die();
+		}
 		self::$auth = new $auth_method;
 	}
 	//alias login

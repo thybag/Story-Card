@@ -83,7 +83,7 @@ class Cards {
 		$message = CardStore::setup();
 		$data = array();
 		$data['setup'] = true;
-		$data['welcome'] = 'Thankyou for using Card-Store';
+		$data['welcome'] = true;
 		$data['message'] = $message;
 		return $data;
 	}

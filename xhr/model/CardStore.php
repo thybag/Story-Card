@@ -12,7 +12,11 @@ class CardStore{
 	private static $store;
 
 	public static function load($storeType){
-		include('config/drivers/data/'.$storeType.'.php');
+		//If file cannot be loaded, handle error.
+		if((include'config/drivers/data/'.$storeType.'.php')==false){
+			echo '{"setup":true, "error":true, "message":"There doesn\'t appear to be an cardStore driver called <strong>'.$storeType.'</strong> in /config/drivers/data/. Are you sure you have typed it correctly?"}';
+			die();
+		}
 		$class = $storeType.'Store';
 		self::$store = new $class;
 	}

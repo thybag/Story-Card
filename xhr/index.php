@@ -15,7 +15,15 @@ require 'flight/Flight.php';
 require 'lib/htmLawed.php';
 //Load required classes
 require 'controllers/general.php';
-include 'config/config.php' ;//get config
+
+//get config
+$config = array();
+if((include 'config/config.php')==false){#
+	echo '{"setup":true, "error":true, "message":"The <strong>config.php</strong> file could not be found. <br/> Please double check you have renamed your <strong>config.sample.php</strong> file to <strong>config.php</strong>."}';
+	die();
+}
+Config::store($config);
+//Load cards controller.
 require 'controllers/cards.controller.php';
 //Get datastores (using drivers specified in config)
 require 'model/CardStore.php';

@@ -72,15 +72,26 @@
 	}
 
 	/**
-	 * First time setup
-	 * Display thanks for installing plus some info
+	 * Setup display
+	 * Used to display messages during the setup proccess for a new Story-Card installtion.
+	 * Will display both "thanks" messages on success, or error info on failuire.
 	 *
 	 * @param d JSON info on install
 	 */
 	this.newSetup = function(d){
+		//Hide indicator
 		$("#indicator").hide();
-		var greeting = tpl.template("<div class='greeting'><h1>Thankyou for installing Story-Card</h1><p>{message}</p></div>",d);
-		$('#card_container').append(greeting);
+		//Setup message & add reload button markup.
+		var msg='';
+		d.reload = '<p><a href="javascript:document.location.reload();">Click here to reload</a></p>'
+		//Generate HTML for error / thanks for installing.
+		if(d.error==true){
+			msg = tpl.template("<div class='greeting'><h1>Oh no! It looks like somthing went wrong.</h1><p>{message}</p> {reload} </div>",d);
+		}else{
+			msg = tpl.template("<div class='greeting'><h1>Thankyou for installing Story-Card</h1><p>{message}</p> {reload}</div>",d);
+		}
+		//add to page.
+		$('#card_container').append(msg);
 	}
 
 	/**
