@@ -102,7 +102,7 @@
 	 */
 	this.setup = function(data){
 		//Clear any existing data
-		$( ".container ul" ).html('').sortable( "destroy" );
+		$( "#card_container .container ul" ).html('').sortable( "destroy" );
 		//Hide loading indicator
 		$("#indicator").hide();
 		//Log
@@ -316,7 +316,7 @@
 	 * @param data Storycard data
 	 * @param append DOM node to append card in to.
 	 */
-	this.ui.renderCard = function(data){	
+	this.ui.renderCard = function(data, attach){	
 		//Template storycard
 		var card = $(tpl.template("cardTPL", data));
 		//Hook up click handler.
@@ -325,7 +325,11 @@
 		card.single_double_click( _this.ui.flipCard, _this.ui.renderEditDialog);
 
 		//Append Card to status drop zone
-		$("ul.connectedSortable[data-type='"+data.status+"']").append(card);
+		if(typeof attach == 'undefined'){
+			$("ul.connectedSortable[data-type='"+data.status+"']").append(card);
+		}else{
+			attach.append(card);
+		}
 		//return new cards jQuery object.
 		return card;
 	}
@@ -688,6 +692,63 @@
 		_this.ui.renderAddDialog();
 	}
 
+
+	//In Progress content, 
+	//SPRINT BUILDER IS NOT YET FUNCTIONAL.
+	this.actions.closeSprintBuilder = function(){
+		//add check before so they dont accidently delete all there data
+
+		$('#sprint_container').html('').hide();
+		$('#card_container').show();
+	}
+	
+	this.actions.addSprint = function(){
+		//swap zones
+		$('#card_container').hide();
+		$('#sprint_container').show();
+		//Build layout
+		var products = tpl.template("sectionTPL", {type:"column", title:"Product Backlog", status:"sprint_none"});
+		var newsprint = tpl.template("sectionTPL", {type:"row", title:"Hi", status:"product_backlog"});
+		//Append in to the sprint container
+		document.getElementById('sprint_container').appendChild(products);
+		document.getElementById('sprint_container').appendChild(newsprint);
+		//Attach UI
+		$(newsprint)
+			.prepend($("<div class='sprint_builer'>Sprint Name: <input /> Start Date: <input /> End Date: <input /> Total time (hours cumlative): <input /></div>"))
+			.append($("<div><input type='checkbox'>Automatically generate priorities <input type='submit' style='width:100px;float:right;' class='button right' />.</div>"))
+			.find('span').remove();
+		//Load cards
+		$.get('xhr/list?product='+url['product']+'&sprint=all', function(data){
+			data = JSON.parse(data);
+			//Setup backlog lists
+			for(var i in data.sprints){
+				var sp = data.sprints[i];
+				$(products).append($("<span>Sprint "+sp+"</span>"));
+				$(products).append($("<ul class='connectedSortable' data-type='sprint_"+sp+"'></ul>"));
+			}
+			//Add in cards (from backlogs - need 2 get backlog identifier from "workflow.json")
+			for(var i in data.data){
+				var c = data.data[i];
+				//For now just use backlog
+				if(c.status == 'Backlog'){
+					if(c.sprint==0 || c.sprint=='' || c.sprint == 'all') c.sprint = 'none';
+					_this.ui.renderCard(c, $("ul.connectedSortable[data-type='sprint_"+c.sprint+"']"));
+				}
+			}
+			//Make cards draggable
+			$( "#sprint_container .container ul" ).sortable({
+				connectWith: ".connectedSortable",
+				 receive: function(){
+				 	//Do nothing for now.
+				 }
+			}).disableSelection();
+
+			//refit window.
+			_this.ui.scale_window();
+		});
+
+	}
+
 	/***********************
 
 	 	Private Methods. Internal utility methods
@@ -771,6 +832,8 @@
 						],
 					]
 			 });
+		//rescale enviroment
+		_this.ui.scale_window();
 	}
 
 	//Make cards accessible in the global namespace

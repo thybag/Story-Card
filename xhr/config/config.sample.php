@@ -42,7 +42,8 @@ $config['datastore'] = 'flatfile';
 //$config['sharepoint.wsdl'] = 'config/Lists.asmx.xml';
 //$config['sharepoint.user'] = '';
 //$config['sharepoint.password'] = '';
-//$config['sharepoint.list'] = 'Product Backlog';
+//$config['sharepoint.cardlist'] = 'Product Backlog';
+//$config['sharepoint.productlist'] = 'Products';
 //$config['sharepoint.view'] = 'story_card_api';
 
 //$config['datastore'] = 'mysql';

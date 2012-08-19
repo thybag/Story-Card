@@ -110,9 +110,9 @@
 	}
 	#alert_dialog div {margin-bottom:20px;}
 
-	#cpanel {height:29px;}
-	#cpanel span{margin:5px;display:inline-block;}
-	#cpanel .action {
+	#cpanel,.cpanel {height:29px;}
+	#cpanel span,.cpanel span{margin:5px;display:inline-block;}
+	#sprint_container .action, #card_container .action{
 		margin-top:1px;
 		background-color: #4C6591;
 		font-size:1em;
@@ -123,7 +123,7 @@
 		padding:6px;
 		margin-right: 1px;
 	}
-	#cpanel .action:hover {
+	#sprint_container .action:hover, #card_container .action:hover {
 		background-color:#3F5377;
 		cursor:pointer;
 	}

@@ -55,15 +55,24 @@
 		<div id='indicator'>Loading...</div>
 		<div style='clear:both'></div>
 	</div>
+
 	<div id='card_container'>
 		<div class='container row' id='cpanel' style='display:none;'>
 			<span>Control panel:</span>
 			
 			<a class='action'>New product</a>
-			<a class='action'>New sprint</a>
+			<a class='action' href='javascript:cards.actions.addSprint()'>New sprint</a>
 			<a class='action' href='javascript:cards.actions.launchNewCardDialog();'>New card</a>
 		</div>
 	</div>
+	<div id='sprint_container' style='display:none;'>
+		<div class='container row cpanel'>
+			<span>Control panel:</span>
+			<a class='action' href='javascript:cards.actions.closeSprintBuilder();'>Back</a>
+		</div>
+	</div>
+
+
 
 	<div id="dialog" title="Login" style='display:none;'>
 		<form onSubmit='return cards.actions.login(this);'>

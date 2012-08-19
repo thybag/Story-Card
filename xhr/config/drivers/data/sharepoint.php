@@ -34,7 +34,7 @@ class SharePointStore extends StoreAbstract{
 		$this->sp->setReturnType('object');
 		$this->sp->lowercaseIndexs(false);
 		//get the backlog list as a CRUD interface
-		$this->backlog = $this->sp->CRUD(Config::get('sharepoint.list'));
+		$this->backlog = $this->sp->CRUD(Config::get('sharepoint.cardlist'));
 	}	
 
 	/**
@@ -45,7 +45,7 @@ class SharePointStore extends StoreAbstract{
 	 */
 	public function listProducts(){
 		//List products alphabetically
-		$data = $this->sp->query("Products")->sort("Title","ASC")->get();
+		$data = $this->sp->query(Config::get('sharepoint.productlist'))->sort("Title","ASC")->get();
 		//Convert results in to flat array
 		$products = array();
 		foreach($data as $product){
@@ -98,7 +98,7 @@ class SharePointStore extends StoreAbstract{
 		if(isset($data['sprint']))   $data['sprint'] = (int) $data['sprint'] ;
 
 		//Lookup product id (as Product is a lookup type field)
-		$product = $this->sp->query("Products")->where("Title","=",$data['product'])->get();
+		$product = $this->sp->query(Config::get('sharepoint.productlist'))->where("Title","=",$data['product'])->get();
 		$product = $product[0];
 
 		//If product isn't found, fail.
