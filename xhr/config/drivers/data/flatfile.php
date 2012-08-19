@@ -64,7 +64,13 @@ class FlatFileStore extends StoreAbstract{
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
 
-
+    /**
+     * Setup a new FlatFile DataStore
+     * Create folders & files nesssary for datastore to operate & inform
+     * user of this action.
+     * 
+     * @return Installtion notes.
+     */
     public function setup(){
     	//If not already setup
     	if(!file_exists($this->cache.'products.txt')){
@@ -73,7 +79,7 @@ class FlatFileStore extends StoreAbstract{
     		if(!file_exists($this->cache)) mkdir($this->cache,0775,true);
     		//Setup products with default one created.
     		$products = array(Config::get('default_product'));
-    		file_put_contents($this->cache.'products.txt',json_encode($products));
+    		file_put_contents($this->cache.'products.txt', json_encode($products));
 
     		return "A flatfile database has been automatically created for you. Just hit refresh to to get started.";
     	}

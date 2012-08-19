@@ -22,10 +22,10 @@ class MysqlStore extends StoreAbstract{
 		// try to connect to the database 
 		try {
 		    $this->dbconn = new PDO($dsn, Config::get("mysql.user"), Config::get("mysql.password"));
-			//$this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}catch (PDOException $e) {
 			// if not able to connect to the database die and display error message
-		    echo 'Connection failed: ' . $e->getMessage();
+			echo '{"setup":true, "error":true, "message":"It seems we are unable to connect to the database <strong>'.Config::get("mysql.database").'</strong>.</br>The error message was: '.$e->getMessage().'"}';
 			die();
 		}
 	}	
@@ -42,23 +42,22 @@ class MysqlStore extends StoreAbstract{
 		//Remap data to fit schema defined in config
 		//This has the added benifit of stopping any dodgy values
 		//being passed in as column_names
-		$data = $this->remap($data);
-
+		$data = (array) $this->remap($data);
 		//Create keys SQL
-		$keys = implode(array_keys($data),',');
+		$keys = implode(',', array_keys($data));
 		//Create array of values
 		$values= array_values($data);
 		//create replacer SQL
-		$sql = implode(array_pad(array(), sizeof($data), '?'),',');
+		$sql = implode(',', array_pad(array(), sizeof($data), '?'));
 
 		try{
 			//Prepare query (add in $keys and the ?'s to be replaced)
-			$q = $this->dbconn->prepare("INSERT INTO cards ({$keys}) VALUES ({$sql})");
+			$q = $this->dbconn->prepare("INSERT INTO sc_backlog ({$keys}) VALUES ({$sql})");
 			//run it with the $values array
 			$q->execute($values);
 			//Once card is saved, use its ID to grab a copy of it front the DB & return the card.
 			$new_id = $this->dbconn->lastInsertId();
-			$n = $this->dbconn->prepare("SELECT * FROM cards WHERE id = ?");
+			$n = $this->dbconn->prepare("SELECT * FROM sc_backlog WHERE id = ?");
 			$n->execute(array($new_id));
 			//return as object
 			return (object) $n->fetch(PDO::FETCH_ASSOC);
@@ -87,12 +86,12 @@ class MysqlStore extends StoreAbstract{
 		$values = array();$keys = array();
 		foreach($data as $k=>$v){$keys[]=$k.'= ?'; $values[] = $v;}
 		//implode keys to create sql
-		$sql = implode($keys,',');
+		$sql = implode(',', $keys);
 		//Add id as final value for PDO to replace
 		$values[] = (int)$id;
 		try{
 			//preparem SQL to update the card with the new details
-			$q = $this->dbconn->prepare("UPDATE cards SET {$sql} WHERE id = ?");
+			$q = $this->dbconn->prepare("UPDATE sc_backlog SET {$sql} WHERE id = ?");
 			//run the query with the $values array
 			$q->execute($values);
 			//inform the system save was successful
@@ -108,7 +107,51 @@ class MysqlStore extends StoreAbstract{
 	public function removeCard($id){	}
 	public function addProduct($title,$data){}
     public function addSprint($identifier,$data){}
-    public function setup(){}
+
+
+    /**
+     * Setup a new MySQL DataStore
+     * Generate required Tables in the MySQL Db. Add inital data & inform
+     * user of the changes.
+     * 
+     * @return Installtion notes.
+     */
+    public function setup(){
+
+    	//DB schema for Card-Store
+ 		$sql = "
+	 		CREATE TABLE IF NOT EXISTS `sc_backlog` (
+		        `id` int(11) NOT NULL AUTO_INCREMENT,
+		        `product` varchar(255) NOT NULL,
+		        `title` varchar(255) NOT NULL,
+		        `story` text NOT NULL,
+		        `priority` varchar(5) NOT NULL,
+		        `acceptance` text NOT NULL,
+		        `status` varchar(255) NOT NULL,
+		        `sprint` int(11) NOT NULL,
+		        `estimate` int(11) NOT NULL,
+		        `time_spent` int(11) NOT NULL DEFAULT '0',
+		        `completion_notes` text NOT NULL,
+		        `assigned` varchar(255) NOT NULL,
+	       	 PRIMARY KEY (`id`)
+	    	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+			CREATE TABLE IF NOT EXISTS `sc_products` (
+		        `id` int(11) NOT NULL AUTO_INCREMENT,
+		        `product` varchar(255) NOT NULL,
+	       	 PRIMARY KEY (`id`)
+	    	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+			INSERT INTO sc_products VALUES (null, '".Config::get('default_product')."');
+		";
+		//Attempt to run SQL
+		try {
+			$this->dbconn->exec($sql);
+			//Success
+			return "Your cardstore database has been successfully created.";
+		}catch (PDOException $e) {
+			//Fail
+			return "Sorry, we were unable to create the database table's for you automatically.<br/> The error was: ".$e->getMessage();
+		};
+    }
 	/**
 	 * List products
 	 * Returns an array of all products available to view.
@@ -116,17 +159,26 @@ class MysqlStore extends StoreAbstract{
 	 * @return array $products
 	 */
 	public function listProducts(){
-		//get all product names from the database
-		$q = $this->dbconn->prepare('SELECT product FROM cards GROUP BY product');
-		$q->execute();
-		//make a array of products
-		$data=array();
-		while ($result = $q->fetch(PDO::FETCH_ASSOC)) {
-			$data[]=$result['product'];
-		};
-		//return information
-		return $data;
+		
+		try{
+			//get all product names from the database
+			$q = $this->dbconn->prepare('SELECT product FROM sc_products');
+			$q->execute();
+			//create array to store products in.
+			$data=array();
+			//return null if no products exist
+			if($q->rowCount() == 0)return null;
+			//Add returned products to array
+			while ($result = $q->fetch(PDO::FETCH_ASSOC)) {
+				$data[]=$result['product'];
+			}
 
+			//return information
+			return $data;
+
+		}catch (PDOException $e) {
+			return null;
+		}	
 	}
 
 	/**
@@ -142,11 +194,11 @@ class MysqlStore extends StoreAbstract{
 		//get cards for the specified product and sprint from the database
 		if($sprint == 'all'){
 			//run query using just product
-			$q = $this->dbconn->prepare("SELECT * FROM cards WHERE product = ?");
+			$q = $this->dbconn->prepare("SELECT * FROM sc_backlog WHERE product = ?");
 			$q->execute(array($product));
 		}else{
 			//run query using product and sprint variables
-			$q = $this->dbconn->prepare("SELECT * FROM cards WHERE product = ? AND sprint= ?");
+			$q = $this->dbconn->prepare("SELECT * FROM sc_backlog WHERE product = ? AND sprint= ?");
 			$q->execute(array($product, $sprint));
 		}
 		

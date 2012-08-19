@@ -64,23 +64,33 @@ class Cards {
 
 		$data = array();
 
-		$products = CardStore::listProducts();//Get from CardStore driver.
+		//Get products from CardStore driver.
+		$products = CardStore::listProducts();
 
 		//If product is null, initate system setup
 		if($products === null){
+			//return setup screen
 			$data = $this->setup();
 		}else{
+			//Return normal data
 			$data['products'] = $products;
 			$data['workflow'] = $this->workflow;
 			$data['refresh_time']	= Config::get("refresh_time");
 			$data['default_product'] = Config::get("default_product");
 		}
-
+		//Return as json
 		echo json_encode($data);
 	}
 
+	/**
+	 * Setup
+	 * If the system detects that this is a new installtion, run setup
+	 * processes, and display setup information to the user
+	 */
 	private function setup(){
+		//Run setup process
 		$message = CardStore::setup();
+		//Return details on setup status
 		$data = array();
 		$data['setup'] = true;
 		$data['welcome'] = true;

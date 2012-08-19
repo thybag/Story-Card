@@ -38,6 +38,10 @@ abstract class StoreAbstract
     //Remap (utility method)
     //Convert system attributes to datastore attributes
     public function reMap($data,$toInternal=false){
+
+        //Return type should be the same as the one passed in.
+        $isobj = is_object($data);
+
         //get column mappings (internal=>external)
         $map = Config::get("column_mappings");
         //If converting the other way, just flip the mapping array round
@@ -50,7 +54,7 @@ abstract class StoreAbstract
         foreach($data as $attr=>$val){
             if(isset($map[$attr])) $newData->{$map[$attr]} = $val;
         }
-        //Return remapped object.
-        return $newData;
+        //Return remapped object. (as array if that is what is was to begin with)
+        return ($isobj) ? $newData : (array)$newData;
     }
 }
