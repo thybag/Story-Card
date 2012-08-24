@@ -693,6 +693,23 @@
 	}
 
 
+
+	this.actions.createSprint = function(){
+		
+		var formdata = $('#sprint_form').serialize();
+
+		$('#product_backlog').find('li').each(function(i,c){
+
+			formdata += '&card['+i+']='+c.getAttribute('data-ref');
+			
+			
+
+
+
+		});
+console.log(formdata);
+		return false;
+	}
 	//In Progress content, 
 	//SPRINT BUILDER IS NOT YET FUNCTIONAL.
 	this.actions.closeSprintBuilder = function(){
@@ -700,6 +717,8 @@
 
 		$('#sprint_container').html('').hide();
 		$('#card_container').show();
+		//refit window.
+		_this.ui.scale_window();
 	}
 	
 	this.actions.addSprint = function(){
@@ -710,13 +729,20 @@
 		var products = tpl.template("sectionTPL", {type:"column", title:"Product Backlog", status:"sprint_none"});
 		var newsprint = tpl.template("sectionTPL", {type:"row", title:"Hi", status:"product_backlog"});
 		//Append in to the sprint container
+
+		var backbutton = $("<div class='container row cpanel'><span>Control panel:</span><a class='action' href='javascript:cards.actions.closeSprintBuilder();'>Back</a></div>");
+
+		document.getElementById('sprint_container').appendChild(backbutton.get(0));
 		document.getElementById('sprint_container').appendChild(products);
 		document.getElementById('sprint_container').appendChild(newsprint);
 		//Attach UI
-		$(newsprint)
-			.prepend($("<div class='sprint_builer'>Sprint Name: <input /> Start Date: <input /> End Date: <input /> Total time (hours cumlative): <input /></div>"))
-			.append($("<div><input type='checkbox'>Automatically generate priorities <input type='submit' style='width:100px;float:right;' class='button right' />.</div>"))
+		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
+			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/> Start Date: <input data-type='date' name='start_data'/> End Date: <input data-type='date' name='end_date'/> Total time (hours cumlative): <input name='total_hours' /></div>"))
+			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise'><label for='prioritise'>Automatically generate priorities</label></div>"))
+			.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
 			.find('span').remove();
+
+			$( "input[data-type=date]" ).datepicker();
 		//Load cards
 		$.get('xhr/list?product='+url['product']+'&sprint=all', function(data){
 			data = JSON.parse(data);
