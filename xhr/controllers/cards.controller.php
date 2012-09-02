@@ -113,14 +113,6 @@ class Cards {
 		if(isset($_GET['sprint'])){ $sprint = (strtolower($_GET['sprint'])!='all') ? (int)$_GET['sprint'] : 'all';}
 		//Get list of storycards from cardstore driver.
 		$data = CardStore::getCardsFor($product, $sprint);
-
-		//Work out sprint lists
-		//@todo: Make this less awful + these should be cached via product & not reloaded when sprint is selected.
-		$sprint_list = array();
-		foreach($data as $d){
-			$t_sp = isset($d->sprint) ? $d->sprint : '0';//0=all
-			if(!in_array($t_sp,$sprint_list) && $t_sp != 0) $sprint_list[] =round($t_sp,1);	
-		}
 		//Setup array (Associative arrays will become objects when stored in JSON)
 		$json = array();
 		//get users current auth status
@@ -128,7 +120,7 @@ class Cards {
 		//get users name (display purposes)
 		$json['authed_user'] = isset($_SESSION['sc_username']) ? $_SESSION['sc_username'] : 0;
 		//Get sprints list (see todo)
-		$json['sprints'] = $sprint_list;
+		$json['sprints'] = CardStore::getSprints($product);//$sprint_list;
 		//Get StoryCards
 		$json['data'] = $data;
 		//get loadtime
@@ -241,9 +233,13 @@ class Cards {
 		}
 	}
 
-
+	/**
+	 * addSprint
+	 * Create a new sprint
+	 *
+	 * @return null
+	 */
 	public function addSprint(){
-
 		//Sprint
 		$sprint = strip_tags($_POST['sprint']);
 		//Add sprint to datastore
@@ -252,6 +248,8 @@ class Cards {
 					'end_date' =>$_POST['end_date'],
 					'hours' =>$_POST['total_hours']
 				));
+
+		if($sprint_id==null){echo 0; die();} 
 		//foreach card
 		$updates=array(); $p=100;
 		foreach($_POST['card'] as $i => $card_id){		
@@ -268,10 +266,12 @@ class Cards {
 			}
 		}
 		//updateCards to reflect change (allow for batch methods)
-		CardStore::updateCards($updates);
+		if(CardStore::updateCards($updates)){
+			echo 1;
+		}else{
+			echo 0;
+		}
 
-		echo 1;
-		
 	}
 
 	/**

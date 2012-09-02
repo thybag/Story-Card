@@ -122,6 +122,23 @@ class FlatFileStore extends StoreAbstract{
     }
 
     /**
+	 * getSprints
+	 * return an array of all sprints relating to the current product;
+	 * @param $product
+	 * @return array of sprint ID's
+	 */
+	public function getSprints($product){
+		//Load data for product
+		$product_file = $this->cache.md5($product).'.json';
+		$json = json_decode(file_get_contents($product_file));
+		//Create array of sprint identifiers
+		$sprints = array();
+		foreach($json->sprints as $sp)$sprints[] = $sp->identifier;
+
+		return $sprints;
+	}
+	
+    /**
      * Setup a new FlatFile DataStore
      * Create folders & files nesssary for datastore to operate & inform
      * user of this action.

@@ -26,19 +26,20 @@ abstract class AuthAbstract
 abstract class StoreAbstract
 {
     //abstract methods
-	abstract public function getCardsFor($product,$sprint=0);
+	abstract public function getCardsFor($product, $sprint=0);
     abstract public function listProducts();
     abstract public function addCard($data);
-    abstract public function updateCard($id,$data);
+    abstract public function updateCard($id, $data);
     abstract public function updateCards($cards);
     abstract public function removeCard($id);
-    abstract public function addProduct($title,$data);
-    abstract public function addSprint($identifier,$data);
+    abstract public function addProduct($title, $data);
+    abstract public function addSprint($identifier, $data);
+    abstract public function getSprints($product);
     abstract public function setup();
 
     //Remap (utility method)
     //Convert system attributes to datastore attributes
-    public function reMap($data,$toInternal=false){
+    public function reMap($data, $toInternal=false){
 
         //Return type should be the same as the one passed in.
         $isobj = is_object($data);

@@ -14,6 +14,8 @@ class SharePointStore extends StoreAbstract{
 	//Private vars
 	private $sp;
 	private $backlog;
+	//cache cards to speed up sprint reads
+	private $tmp;
 
 	/**
 	 * Construct
@@ -153,6 +155,24 @@ class SharePointStore extends StoreAbstract{
 	}
 
 	/**
+	 * getSprints
+	 * return an array of all sprints relating to the current product;
+	 * @param $product
+	 * @return array of sprint ID's
+	 */
+	public function getSprints($product){
+		//Load data from temp var
+		$data = $this->tmp;
+		//generate array
+		$sprint_list = array();
+		foreach($data as $d){
+			$t_sp = isset($d->sprint) ? $d->sprint : '0';//0=all
+			if(!in_array($t_sp,$sprint_list) && $t_sp != 0) $sprint_list[] =round($t_sp,1);	
+		}
+		return $sprint_list;
+	}
+
+	/**
 	 * Get Storycards for given "product" & "sprint"
 	 * Return an array of StoryCard Objects for the provided sprint & product
 	 *
@@ -196,6 +216,9 @@ class SharePointStore extends StoreAbstract{
 			//StoryCard must be object not associative array.
 			$jsondata[$d->id] = $d;
 		}
+
+		//Cache card data in tmp
+		$this->tmp = $jsondata;
 
 		//return data (id=>carddata)
 		return $jsondata;		

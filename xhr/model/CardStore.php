@@ -51,6 +51,9 @@ class CardStore{
 	public static function addSprint($identifier,$data){
 		return self::$store->addSprint($identifier,$data);
 	}
+	public static function getSprints($product){
+		return self::$store->getSprints($product);
+	}
 
 }
 	
