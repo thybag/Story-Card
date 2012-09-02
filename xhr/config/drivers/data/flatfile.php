@@ -60,6 +60,13 @@ class FlatFileStore extends StoreAbstract{
 
 	}
 
+	/**
+	 * Update Cards
+	 * Batch update cards
+	 * 
+	 * @param array of card Changesets
+	 * @return true|false success of save
+	 */
 	public function updateCards($data){
 		//Get product file (md5 of product name)
 		$product_file = $this->cache.md5($_GET['product']).'.json';
@@ -80,8 +87,6 @@ class FlatFileStore extends StoreAbstract{
 		//save file
 		file_put_contents($product_file, json_encode($json));
 		return true;
-
-
 	}
 	//Stubs
 	public function removeCard($id){}

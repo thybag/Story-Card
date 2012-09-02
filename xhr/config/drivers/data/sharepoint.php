@@ -78,11 +78,43 @@ class SharePointStore extends StoreAbstract{
 			return false;
 		}
 	}
+
+	/**
+	 * Update Cards
+	 * Batch update cards
+	 * 
+	 * @param array of card Changesets
+	 * @return true|false success of save
+	 */
+	public function updateCards($data){
+		//Remap all data
+		foreach($data as $i => $d)$data[$i] =$this->remap($d);
+		//Apply updates
+		if($this->backlog->updateMultiple($data) != null){
+			return true;
+		}else{
+			return false;
+		}	
+	}
+
+	 /**
+     * Add a new Sprint
+     * Create a sprint item by adding to the sprints array in the product file json.
+     * 
+     * @return $identifier ID of sprint
+     */
+	public function addSprint($identifier,$data){
+    	return $identifier;
+    }
+
 	//Stubs
 	public function removeCard($id){}
 	public function addProduct($title,$data){}
-    public function addSprint($identifier,$data){}
-    public function setup(){}
+
+   //Setup (not currently possible for sharepoint)
+    public function setup(){
+    	return "Sorry, The SharePoint driver does not currently have the ability to install itself automatically. You will need to manually set up the lists yourself.";
+    }
     
 	/**
 	 * Add Card
