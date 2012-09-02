@@ -49,20 +49,72 @@ class FlatFileStore extends StoreAbstract{
 		//Get product file (md5 of product name)
 		$product_file = $this->cache.md5($_GET['product']).'.json';
 		//Convert to json array of storys
-		$json = (array) json_decode(file_get_contents($product_file));
+		$json = json_decode(file_get_contents($product_file));
 		//Apply changes
 		foreach($data as $key => $val){
-			$json[$id]->{$key} = $val;
+			$json->cards[$id]->{$key} = $val;
 		}
 		//save file
-		file_put_contents($product_file ,json_encode($json));
+		file_put_contents($product_file, json_encode($json));
 		return true;
+
+	}
+
+	public function updateCards($data){
+		//Get product file (md5 of product name)
+		$product_file = $this->cache.md5($_GET['product']).'.json';
+		//Convert to json array of storys
+		$json = json_decode(file_get_contents($product_file));
+		//Apply changes
+		foreach($data as $c){
+
+			if(!isset($c['id'])) continue;
+			
+			$id = $c['id'];
+			unset($c['id']);
+			foreach($c as $key => $val){
+				$json->cards[$id]->{$key} = $val;
+			}
+			
+		}
+		//save file
+		file_put_contents($product_file, json_encode($json));
+		return true;
+
 
 	}
 	//Stubs
 	public function removeCard($id){}
 	public function addProduct($title,$data){}
-    public function addSprint($identifier,$data){}
+
+	 /**
+     * Add a new Sprint
+     * Create a sprint item by adding to the sprints array in the product file json.
+     * 
+     * @return $identifier ID of sprint
+     */
+    public function addSprint($identifier, $data){
+    	//get product file
+    	$product_file = $this->cache.md5($_GET['product']).'.json';
+    	$json = json_decode(file_get_contents($product_file));
+
+    	//Setup new product file if one doesnt exist
+    	if(!is_object($json)) $json = (object) array('cards'=>array(), 'sprints'=>array());
+
+    	//Setup new sprint item & add to sprints array
+    	$json->sprints[] = (object) array(
+    			"identifier" => $identifier,
+    			"start_date" => $data['start_date'],
+    			"end_date" => $data['end_date'],
+    			"hours" => $data['hours'],
+    	);
+
+    	//write to file
+    	file_put_contents($product_file, json_encode($json));
+
+    	//return new ID
+    	return $identifier;
+    }
 
     /**
      * Setup a new FlatFile DataStore
@@ -98,10 +150,10 @@ class FlatFileStore extends StoreAbstract{
 		$product_file = $this->cache.md5($data['product']).'.json';
 		//read contents as json
 		$json = json_decode(file_get_contents($product_file));
-		if(!is_array($json)) $json = array();
+		if(!is_object($json)) $json = (object) array('cards'=>array(), 'sprints'=>array());
 		//Apply ID and add to JSON array
-		$data['id'] = sizeof($json);
-		$json[] = (object) $data;
+		$data['id'] = sizeof($json->cards);
+		$json->cards[] = (object) $data;
 		//Save json
 		file_put_contents($product_file ,json_encode($json));
 		return $data;
@@ -121,8 +173,19 @@ class FlatFileStore extends StoreAbstract{
 		$product_file = $this->cache.md5($product).'.json';
 		if(file_exists($product_file)){
 			//return all cards
-			$raw = file_get_contents($product_file);
-			return json_decode($raw);
+			$json = json_decode(file_get_contents($product_file));
+
+			//If not showing "all" spints, remove any cards that dont belong in view
+			if($sprint != 'all'){
+				foreach($json->cards as $i => $c){
+					//If card is not in sprint, remove it from array to be returned.
+					if($c->sprint != $sprint){
+						unset($json->cards[$i]);
+					} 
+				}
+			}
+
+			return $json->cards;
 		}else{
 			return array();
 		}

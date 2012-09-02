@@ -30,6 +30,7 @@ abstract class StoreAbstract
     abstract public function listProducts();
     abstract public function addCard($data);
     abstract public function updateCard($id,$data);
+    abstract public function updateCards($cards);
     abstract public function removeCard($id);
     abstract public function addProduct($title,$data);
     abstract public function addSprint($identifier,$data);

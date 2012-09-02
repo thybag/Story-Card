@@ -241,6 +241,39 @@ class Cards {
 		}
 	}
 
+
+	public function addSprint(){
+
+		//Sprint
+		$sprint = strip_tags($_POST['sprint']);
+		//Add sprint to datastore
+		$sprint_id = CardStore::addSprint($sprint, array(
+					'start_date' => $_POST['start_date'],
+					'end_date' =>$_POST['end_date'],
+					'hours' =>$_POST['total_hours']
+				));
+		//foreach card
+		$updates=array(); $p=100;
+		foreach($_POST['card'] as $i => $card_id){		
+			//Add cards
+			$updates[$i] = array(
+				'id'=> $card_id,
+				'sprint'=>$sprint_id
+			);
+			// If we are priortising, add priority 
+			// (defualt interval is 2, user should be able to conifgure this)
+			if($data['prioritise']==1){
+				$updates[$i]['priority']= $p;
+				$p = $p-2;
+			}
+		}
+		//updateCards to reflect change (allow for batch methods)
+		CardStore::updateCards($updates);
+
+		echo 1;
+		
+	}
+
 	/**
 	 * updateTimeStamp
 	 * Update Last updated timestamp (for browser polling)

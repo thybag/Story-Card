@@ -27,9 +27,15 @@ class CardStore{
 	public static function addCard($data){
 		return self::$store->addCard($data);
 	}
+
 	public static function updateCard($id,$data){
 		return self::$store->updateCard($id,$data);
 	}
+	public static function updateCards($cards){
+		return self::$store->updateCards($cards);
+	}
+
+
 	public static function removeCard($id){
 		return self::$store->removeCard($id);
 	}

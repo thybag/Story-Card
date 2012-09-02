@@ -696,18 +696,26 @@
 
 	this.actions.createSprint = function(){
 		
+		//Validate form?
+
 		var formdata = $('#sprint_form').serialize();
 
 		$('#product_backlog').find('li').each(function(i,c){
-
 			formdata += '&card['+i+']='+c.getAttribute('data-ref');
-			
-			
-
-
-
 		});
-console.log(formdata);
+
+		$("#indicator").show();
+
+		$.post("xhr/addSprint?product="+url.product, formdata, function(data){
+			//hide loader
+			$("#indicator").hide();
+			//If somthing goes wrong
+			console.log(data);
+
+			//if all is good
+			_this.actions.closeSprintBuilder();
+			_this.reload();
+		});
 		return false;
 	}
 	//In Progress content, 
@@ -737,8 +745,8 @@ console.log(formdata);
 		document.getElementById('sprint_container').appendChild(newsprint);
 		//Attach UI
 		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
-			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/> Start Date: <input data-type='date' name='start_data'/> End Date: <input data-type='date' name='end_date'/> Total time (hours cumlative): <input name='total_hours' /></div>"))
-			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise'><label for='prioritise'>Automatically generate priorities</label></div>"))
+			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/><br/> Start Date: <input data-type='date' name='start_date'/><br/> End Date: <input data-type='date' name='end_date'/><br/> Total time (hours cumlative): <input name='total_hours' /></div>"))
+			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise' checked='checked'><label for='prioritise'>Automatically generate priorities</label></div>"))
 			.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
 			.find('span').remove();
 
