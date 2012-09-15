@@ -60,7 +60,9 @@
 		float:left;
 		background-color:#d9e5fa; /*#f4f7f8*/;
 		width:230px;
-		min-height:170px;
+		min-height:80px;
+		max-height:200px;
+		overflow:hidden;
 	}
 	.card .card_header {
 		background-color:#4c6591; /*#b2e3b6*/;
@@ -76,7 +78,11 @@
 
 	.card .inner {
 		padding:3px;
-		overflow:hidden;
+		/*overflow:hidden;
+		max-height:190px;*/
+	}
+	.ui-sortable-helper.card .inner{
+	/*	overflow:hidden;*/
 	}
 	.card .inner ul, .card .inner ol {list-style:disc;margin-bottom:4px;min-height:0;}
 	.card .inner li {list-style:disc;margin-left:18px;width:210px;}

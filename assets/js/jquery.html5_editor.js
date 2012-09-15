@@ -55,7 +55,7 @@
 				$.each(settings['toolbar-items'], function(index1, items) {
 					var $toolbarItems = $('<ul></ul>').appendTo($toolbar);
 					$.each(items, function(index2, item) {
-						$('<li><a href="#" class="'+item[0]+'" title="'+(item[2] || item[1])+'">'+item[1]+'</a></li>').
+						$('<li><a href="#" tabindex="-1" class="'+item[0]+'" title="'+(item[2] || item[1])+'">'+item[1]+'</a></li>').
 						click(function() {
 							switch(item[0]) {
 							case 'p':

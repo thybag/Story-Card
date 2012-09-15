@@ -102,7 +102,7 @@
 	 */
 	this.setup = function(data){
 		//Clear any existing data
-		$( "#card_container .container ul" ).html('').sortable( "destroy" );
+		$( "#card_container .container ul" ).html('').sortable("destroy");
 		//Hide loading indicator
 		$("#indicator").hide();
 		//Log
@@ -130,12 +130,14 @@
 		 if(d.authed == 1){
 		 	$( ".container ul" ).sortable({
 				connectWith: ".connectedSortable",
-				 receive: _this.actions.moveCard
+				receive: _this.actions.moveCard,
 			}).disableSelection();
+
 		 }
 		 //Render Auth info (login / logout details)
 		 _this.ui.renderAuthInfo(d.authed, d.authed_user);
 		 //Ensure window is scaled correctly
+		 _this.ui.equalize();
 		 _this.ui.scale_window();
 	}
 
@@ -372,6 +374,8 @@
 			$(this).children(".inner").html(card.acceptance);	//get card acceptance
 			$(this).flip({direction:'rl',color:"#D9D4FA",speed:"3"});
 		}//E7EFFF l blue
+		//reequalise
+		_this.ui.equalize();
 	}
 
 	/**
@@ -523,6 +527,9 @@
 		$(".container.half_row").width((win_width-293)/2);
 		//$("#todo_container").height($(window).height()-85);
 	}
+	this.ui.equalize = function(){
+		$(".container ul").equalize();
+	}
 
 	/***********************
 
@@ -605,6 +612,7 @@
 				_this.cardStore[json.card.id] = json.card;
 				//Add new card to UI
 				_this.ui.renderCard(json.card);
+				_this.ui.equalize();
 			}
 		});
 		//Don't submit form!
@@ -675,6 +683,8 @@
 				_this.cardStore[ref].status = new_status;
 			}
 		});
+		//re equalise
+		_this.ui.equalize();
 	}
 	/**
 	 * toggleControls
@@ -696,18 +706,26 @@
 
 	this.actions.createSprint = function(){
 		
+		//Validate form?
+
 		var formdata = $('#sprint_form').serialize();
 
 		$('#product_backlog').find('li').each(function(i,c){
-
 			formdata += '&card['+i+']='+c.getAttribute('data-ref');
-			
-			
-
-
-
 		});
-console.log(formdata);
+
+		$("#indicator").show();
+
+		$.post("xhr/addSprint?product="+url.product, formdata, function(data){
+			//hide loader
+			$("#indicator").hide();
+			//If somthing goes wrong
+			console.log(data);
+		});
+
+
+
+		console.log(formdata);
 		return false;
 	}
 	//In Progress content, 
@@ -737,8 +755,8 @@ console.log(formdata);
 		document.getElementById('sprint_container').appendChild(newsprint);
 		//Attach UI
 		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
-			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/> Start Date: <input data-type='date' name='start_data'/> End Date: <input data-type='date' name='end_date'/> Total time (hours cumlative): <input name='total_hours' /></div>"))
-			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise'><label for='prioritise'>Automatically generate priorities</label></div>"))
+			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/><br/> Start Date: <input data-type='date' name='start_date'/><br/> End Date: <input data-type='date' name='end_date'/><br/> Total time (hours cumlative): <input name='total_hours' /></div>"))
+			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise' checked='checked'><label for='prioritise'>Automatically generate priorities</label></div>"))
 			.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
 			.find('span').remove();
 
@@ -836,6 +854,8 @@ console.log(formdata);
 		current.after(n);
 		//Remove the old one
 		current.remove();
+		//re equalise
+		_this.ui.equalize();
 	}
 
 	/**
