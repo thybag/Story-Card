@@ -182,6 +182,10 @@ class SharePointStore extends StoreAbstract{
 	 * @return array of StoryCard Objects. (array index's must match object Id's)
 	 */
 	public function getCardsFor($product,$sprint='all'){
+
+		//empty array
+		$jsondata = array();
+
 		//A limit of a 150 cards is set, although this can be raised if needed.
 		//To ensure the backlog displays in a sane manner results should be ordered by Priority in descending order.
 		if($sprint == 'all'){

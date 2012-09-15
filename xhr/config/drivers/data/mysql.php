@@ -103,20 +103,39 @@ class MysqlStore extends StoreAbstract{
 
 	}
 
+	/**
+	 * Update Cards
+	 * Batch update cards
+	 * 
+	 * @param array of card Changesets
+	 * @return true|false success of save
+	 */
 	public function updateCards($data){
+
+		$success = true;
+		//Pass each call on to the standard updateCard method
 		foreach($data as $card){
 			$id = $card['id'];
 			unset($card['id']);
-			if(!$this->updateCard($id,$card)) return fal;se;
+			//If any fail, fail the block? (by try and do as many as you can anyway)
+			if(!$this->updateCard($id,$card)) $success = false;
 		}
-		return true;
+		//return status
+		return $success;
 	}
+
+	/**
+	 * getSprints
+	 * return an array of all sprints relating to the current product;
+	 * @param $product
+	 * @return array of sprint ID's
+	 */
 	public function getSprints($product){
 
 		try{
 			//get all product names from the database
-			$q = $this->dbconn->prepare('SELECT name FROM sc_sprints WHERE name = ?');
-			$q->execute($product);
+			$q = $this->dbconn->prepare('SELECT name FROM sc_sprints WHERE product = ?');
+			$q->execute(array($product));
 			//create array to store products in.
 			$data=array();
 			//return null if no products exist
@@ -134,20 +153,24 @@ class MysqlStore extends StoreAbstract{
 		}	
 	}
 
-	 public function addSprint($identifier, $data){
+	 /**
+     * Add a new Sprint
+     * Create a sprint item by adding to the sprints information in to the sprint db table
+     * 
+     * @return $identifier ID of sprint
+     */
+	public function addSprint($identifier, $data){
 	 	try{
+			//Prepare query 
+			$q = $this->dbconn->prepare("INSERT INTO sc_sprints (name, start_date, end_date, hours, product)
+			 							 VALUES (?, ?, ?, ?, ?)");
+			//run it
+			$q->execute(array($identifier, $data['start_date'], $data['end_date'],  $data['hours'], $data['product']));
 
-			//Prepare query (add in $keys and the ?'s to be replaced)
-			$q = $this->dbconn->prepare("INSERT INTO sc_sprints (name, start_date, end_date, hours)
-			 							 VALUES (?, ?, ?, ?)");
-			//run it with the $values array
-			$q->execute(array($identifier, $data['start_date'], $data['end_date'],  $data['hours']));
-
-
-			//Once card is saved, use its ID to grab a copy of it front the DB & return the card.
+			//return id if all went well
 			return $identifier;
 		}catch (PDOException $e) {
-			// just in case it is unable to save
+			// or null if it fails
 			return null;
 		}
 
@@ -177,7 +200,7 @@ class MysqlStore extends StoreAbstract{
 		        `product` varchar(255) NOT NULL,
 		        `title` varchar(255) NOT NULL,
 		        `story` text NOT NULL,
-		        `priority` varchar(5) NOT NULL,
+		        `priority` int(11) NOT NULL,
 		        `acceptance` text NOT NULL,
 		        `status` varchar(255) NOT NULL,
 		        `sprint` varchar(255) NOT NULL,
@@ -198,6 +221,7 @@ class MysqlStore extends StoreAbstract{
 			  `start_date` varchar(35) NOT NULL,
 			  `end_date` varchar(35) NOT NULL,
 			  `hours` int(11) NOT NULL,
+			  `product` varchar(255)  NOT NULL,
 			  PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 			INSERT INTO sc_products VALUES (null, '".Config::get('default_product')."');

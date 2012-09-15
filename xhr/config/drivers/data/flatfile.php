@@ -100,7 +100,7 @@ class FlatFileStore extends StoreAbstract{
      */
     public function addSprint($identifier, $data){
     	//get product file
-    	$product_file = $this->cache.md5($_GET['product']).'.json';
+    	$product_file = $this->cache.md5($data['product']).'.json';
     	$json = json_decode(file_get_contents($product_file));
 
     	//Setup new product file if one doesnt exist

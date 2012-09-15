@@ -121,24 +121,33 @@
 		_this.settings.authed = d.authed;
 		_this.cardStore = d.data;
 		_this.loaded = d.loaded;
+
+		//Since cardstore needs to be a quick access hashmap, it seems some browsers (chrome..) do not 
+		//preserve its original order & instead order the indexs numerically. (which sadly is valid as per the spec)
 		
-		//Render cards
-		 for(var i in d.data){
-				_this.ui.renderCard(d.data[i]);
-		 };
-		 //Do Dragger
-		 if(d.authed == 1){
+		//In order to get the values from our hashmap in the correct order, we need to generate an array of its indexs
+		var sorter = []; for(var i in d.data){sorter.push(i);};
+		//sort those indexs by the priorities of the items they reference
+		sorter.sort(function(a,b){return parseInt(d.data[a].priority) < parseInt(d.data[b].priority) ? 1 : -1;});
+		//then iterate through the sorter array, adding cards to the page in the order it suggests
+		for(var i=0;i<sorter.length;i++){
+			//Render card
+			_this.ui.renderCard(d.data[sorter[i]]);
+		}
+		
+		//Do Dragger
+		if(d.authed == 1){
 		 	$( ".container ul" ).sortable({
 				connectWith: ".connectedSortable",
 				receive: _this.actions.moveCard,
 			}).disableSelection();
 
-		 }
-		 //Render Auth info (login / logout details)
-		 _this.ui.renderAuthInfo(d.authed, d.authed_user);
-		 //Ensure window is scaled correctly
-		 _this.ui.equalize();
-		 _this.ui.scale_window();
+		}
+		//Render Auth info (login / logout details)
+		_this.ui.renderAuthInfo(d.authed, d.authed_user);
+		//Ensure window is scaled correctly
+		_this.ui.equalize();
+		_this.ui.scale_window();
 	}
 
 	/**
@@ -764,6 +773,8 @@
 			.find('span').remove();
 
 			$( "input[data-type=date]" ).datepicker();
+		//Inital scale
+		_this.ui.scale_window();
 		//Load cards
 		$.get('xhr/list?product='+url['product']+'&sprint=all', function(data){
 			data = JSON.parse(data);

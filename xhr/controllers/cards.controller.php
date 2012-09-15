@@ -121,7 +121,7 @@ class Cards {
 		$json['authed_user'] = isset($_SESSION['sc_username']) ? $_SESSION['sc_username'] : 0;
 		//Get sprints list (see todo)
 		$json['sprints'] = CardStore::getSprints($product);//$sprint_list;
-		//Get StoryCards
+		//Get StoryCards - ensure this is an object else json parsing will destroy the card order
 		$json['data'] = $data;
 		//get loadtime
 		$json['loaded'] = time();
@@ -245,8 +245,9 @@ class Cards {
 		//Add sprint to datastore
 		$sprint_id = CardStore::addSprint($sprint, array(
 					'start_date' => $_POST['start_date'],
-					'end_date' =>$_POST['end_date'],
-					'hours' =>$_POST['total_hours']
+					'end_date' 	=>	$_POST['end_date'],
+					'hours' 	=>	$_POST['total_hours'],
+					'product'	=> 	$_GET['product']
 				));
 
 		if($sprint_id==null){echo 0; die();} 
@@ -261,7 +262,7 @@ class Cards {
 			);
 			// If we are priortising, add priority 
 			// (defualt interval is 2, user should be able to conifgure this)
-			if($data['prioritise']==1){
+			if($_POST['prioritise']==1){
 				$updates[$i]['priority']= $p;
 				$p = $p-2;
 			}
