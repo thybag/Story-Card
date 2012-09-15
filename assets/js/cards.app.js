@@ -754,7 +754,7 @@
 		document.getElementById('sprint_container').appendChild(newsprint);
 		//Attach UI
 		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
-			.prepend($("<div class='sprint_builder'>Sprint Name: <input name='sprint'/><br/> Start Date: <input data-type='date' name='start_date'/><br/> End Date: <input data-type='date' name='end_date'/><br/> Total time (hours cumlative): <input name='total_hours' /></div>"))
+			.prepend($("<div class='sprint_builder'><label>Sprint Name: </label><input name='sprint'/><br/><label> Start Date: </label><input data-type='date' name='start_date'/><br/><label> End Date: </label><input data-type='date' name='end_date'/><br/><label> Total time (hours cumlative): </label><input name='total_hours' /></div>"))
 			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise' checked='checked'><label for='prioritise'>Automatically generate priorities</label></div>"))
 			.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
 			.find('span').remove();

@@ -37,6 +37,7 @@ class SharePointStore extends StoreAbstract{
 		$this->sp->lowercaseIndexs(false);
 		//get the backlog list as a CRUD interface
 		$this->backlog = $this->sp->CRUD(Config::get('sharepoint.cardlist'));
+
 	}	
 
 	/**
