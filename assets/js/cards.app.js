@@ -368,14 +368,13 @@
 		if($(this).attr("data-showtype")=='accept'){
 			$(this).attr("data-showtype",'story');
 			$(this).children(".inner").html(card.story);	//Get description
-			$(this).flip({direction:'lr',color:"#D9E5FA",speed:"3"});
+			$(this).flip({direction:'lr',color:"#D9E5FA",speed:"3","onEnd":function(){_this.ui.equalize();}});
 		}else{
 			$(this).attr("data-showtype",'accept');
 			$(this).children(".inner").html(card.acceptance);	//get card acceptance
-			$(this).flip({direction:'rl',color:"#D9D4FA",speed:"3"});
+			$(this).flip({direction:'rl',color:"#D9D4FA",speed:"3","onEnd":function(){_this.ui.equalize();}});
 		}//E7EFFF l blue
-		//reequalise
-		_this.ui.equalize();
+		
 	}
 
 	/**
