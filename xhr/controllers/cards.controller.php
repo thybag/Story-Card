@@ -250,6 +250,7 @@ class Cards {
 				));
 
 		if($sprint_id==null){echo 0; die();} 
+
 		//foreach card
 		$updates=array(); $p=100;
 		foreach($_POST['card'] as $i => $card_id){		

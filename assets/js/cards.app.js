@@ -718,13 +718,17 @@
 		$.post("xhr/addSprint?product="+url.product, formdata, function(data){
 			//hide loader
 			$("#indicator").hide();
-			//If somthing goes wrong
-			console.log(data);
+
+			if(data==1){
+				//if all is good
+				_this.actions.closeSprintBuilder();
+				_this.reload();
+			}else{
+				//If somthing goes wrong
+				console.log(data);
+			}
 		});
 
-
-
-		console.log(formdata);
 		return false;
 	}
 	//In Progress content, 
@@ -763,6 +767,7 @@
 		//Load cards
 		$.get('xhr/list?product='+url['product']+'&sprint=all', function(data){
 			data = JSON.parse(data);
+			
 			//Setup backlog lists
 			for(var i in data.sprints){
 				var sp = data.sprints[i];
@@ -774,7 +779,9 @@
 				var c = data.data[i];
 				//For now just use backlog
 				if(c.status == 'Backlog'){
-					if(c.sprint==0 || c.sprint=='' || c.sprint == 'all') c.sprint = 'none';
+					if(c.sprint==0 || c.sprint=='' || c.sprint == 'all' || c.sprint=='0' ) c.sprint = 'none';
+
+					console.log(c);
 					_this.ui.renderCard(c, $("ul.connectedSortable[data-type='sprint_"+c.sprint+"']"));
 				}
 			}

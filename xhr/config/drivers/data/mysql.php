@@ -103,10 +103,62 @@ class MysqlStore extends StoreAbstract{
 
 	}
 
+	public function updateCards($data){
+		foreach($data as $card){
+			$id = $card['id'];
+			unset($card['id']);
+			if(!$this->updateCard($id,$card)) return fal;se;
+		}
+		return true;
+	}
+	public function getSprints($product){
+
+		try{
+			//get all product names from the database
+			$q = $this->dbconn->prepare('SELECT name FROM sc_sprints WHERE name = ?');
+			$q->execute($product);
+			//create array to store products in.
+			$data=array();
+			//return null if no products exist
+			if($q->rowCount() == 0)return array();
+			//Add returned products to array
+			while ($result = $q->fetch(PDO::FETCH_ASSOC)) {
+				$data[] = $result['name'];
+			}
+
+			//return information
+			return $data;
+
+		}catch (PDOException $e) {
+			return array();
+		}	
+	}
+
+	 public function addSprint($identifier, $data){
+	 	try{
+
+			//Prepare query (add in $keys and the ?'s to be replaced)
+			$q = $this->dbconn->prepare("INSERT INTO sc_sprints (name, start_date, end_date, hours)
+			 							 VALUES (?, ?, ?, ?)");
+			//run it with the $values array
+			$q->execute(array($identifier, $data['start_date'], $data['end_date'],  $data['hours']));
+
+
+			//Once card is saved, use its ID to grab a copy of it front the DB & return the card.
+			return $identifier;
+		}catch (PDOException $e) {
+			// just in case it is unable to save
+			return null;
+		}
+
+	 }
+
+
+
 	//stub
 	public function removeCard($id){	}
 	public function addProduct($title,$data){}
-    public function addSprint($identifier,$data){}
+   
 
 
     /**
@@ -128,7 +180,7 @@ class MysqlStore extends StoreAbstract{
 		        `priority` varchar(5) NOT NULL,
 		        `acceptance` text NOT NULL,
 		        `status` varchar(255) NOT NULL,
-		        `sprint` int(11) NOT NULL,
+		        `sprint` varchar(255) NOT NULL,
 		        `estimate` int(11) NOT NULL,
 		        `time_spent` int(11) NOT NULL DEFAULT '0',
 		        `completion_notes` text NOT NULL,
@@ -140,6 +192,14 @@ class MysqlStore extends StoreAbstract{
 		        `product` varchar(255) NOT NULL,
 	       	 PRIMARY KEY (`id`)
 	    	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+			CREATE TABLE IF NOT EXISTS `sc_sprints` (
+			  `id` int(11) NOT NULL AUTO_INCREMENT,
+			  `name` varchar(255) NOT NULL,
+			  `start_date` varchar(35) NOT NULL,
+			  `end_date` varchar(35) NOT NULL,
+			  `hours` int(11) NOT NULL,
+			  PRIMARY KEY (`id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 			INSERT INTO sc_products VALUES (null, '".Config::get('default_product')."');
 		";
 		//Attempt to run SQL
