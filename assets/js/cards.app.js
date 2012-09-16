@@ -41,7 +41,7 @@
 			if(q=='')continue;
 			var s = q[i].split('=');
 			//Set details to query options
-			this.settings.query_options[s[0]] = s[1].replace('%20',' ');
+			this.settings.query_options[s[0]] = s[1].replace(/%20/g, ' ');
 		}
 		
 		//Hook up resize listener
@@ -526,6 +526,45 @@
 	}
 
 	/**
+	 * Render sprint form
+	 * Render UI elements needed to configure / build a new sprint
+	 *
+	 * @return  UI elements (products & newsprint)
+	 */
+	this.ui.renderSprintForm = function(){
+		//swap zones
+		$('#card_container').hide();
+		$('#sprint_container').show();
+		//Build layout
+		var product_panel = tpl.template("sectionTPL", {type:"column", title:"Product Backlog", status:"sprint_none"});
+		var newsprint = tpl.template("sectionTPL", {type:"row", title:"Hi", status:"product_backlog"});
+		//Append in to the sprint container
+
+		var backbutton = $("<div class='container row cpanel'><span>Control panel:</span><a class='action' href='javascript:cards.actions.closeSprintBuilder();'>Back</a></div>");
+
+		document.getElementById('sprint_container').appendChild(backbutton.get(0));
+		document.getElementById('sprint_container').appendChild(product_panel);
+		document.getElementById('sprint_container').appendChild(newsprint);
+
+		//Attach UI
+		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
+		//Add head/foot forms
+		.prepend(tpl.template('newSprint_headTPL')).append(tpl.template('newSprint_footTPL'))
+		//Submit button
+		.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
+		.find('span').remove();
+
+		//Activate datapicker
+		$( "input[data-type=date]" ).datepicker();
+
+		//Inital scale
+		_this.ui.scale_window();
+
+		//return ui panels
+		return product_panel;
+	}
+
+	/**
 	 * Scale_window
 	 * Update UI to reflect new window size.
 	 */
@@ -536,7 +575,7 @@
 		//$("#todo_container").height($(window).height()-85);
 	}
 	this.ui.equalize = function(){
-		$(".container ul").equalize();
+		$(".container.row ul").equalize();
 	}
 
 	/***********************
@@ -710,7 +749,49 @@
 		_this.ui.renderAddDialog();
 	}
 
+	/**
+	 * generate "create new sprint from"
+	 *
+	 */
+	this.actions.addSprint = function(){
 
+		//Render sprint form UI.
+		var product_panel = _this.ui.renderSprintForm();
+
+		//Load cards
+		$.get('xhr/list?product='+url.product+'&sprint=all', function(data){
+			data = JSON.parse(data);
+			
+			//Setup backlog lists
+			for(var i in data.sprints){
+				var sp = data.sprints[i];
+				$(product_panel).append($("<span>Sprint "+sp+"</span>"));
+				$(product_panel).append($("<ul class='connectedSortable' data-type='sprint_"+sp+"'></ul>"));
+			}
+
+			//Add in cards (from backlogs - need 2 get backlog identifier from "workflow.json")
+			for(var i in data.data){
+				var c = data.data[i];
+				//For now just use backlog
+				if(c.status == 'Backlog'){
+					if(c.sprint==0 || c.sprint=='' || c.sprint == 'all' || c.sprint=='0' ) c.sprint = 'none';
+					_this.ui.renderCard(c, $("ul.connectedSortable[data-type='sprint_"+c.sprint+"']"));
+				}
+			}
+
+			//Make cards draggable
+			$( "#sprint_container .container ul" ).sortable({
+				connectWith: ".connectedSortable",
+				 receive: function(){
+				 	//Do nothing for now.
+				 }
+			}).disableSelection();
+
+			//refit window.
+			_this.ui.scale_window();
+		});
+
+	}
 
 	this.actions.createSprint = function(){
 		
@@ -751,64 +832,7 @@
 		_this.ui.scale_window();
 	}
 	
-	this.actions.addSprint = function(){
-		//swap zones
-		$('#card_container').hide();
-		$('#sprint_container').show();
-		//Build layout
-		var products = tpl.template("sectionTPL", {type:"column", title:"Product Backlog", status:"sprint_none"});
-		var newsprint = tpl.template("sectionTPL", {type:"row", title:"Hi", status:"product_backlog"});
-		//Append in to the sprint container
 
-		var backbutton = $("<div class='container row cpanel'><span>Control panel:</span><a class='action' href='javascript:cards.actions.closeSprintBuilder();'>Back</a></div>");
-
-		document.getElementById('sprint_container').appendChild(backbutton.get(0));
-		document.getElementById('sprint_container').appendChild(products);
-		document.getElementById('sprint_container').appendChild(newsprint);
-		//Attach UI
-		$(newsprint).wrap('<form id="sprint_form" onSubmit="return cards.actions.createSprint();"></form>')
-			.prepend($("<div class='sprint_builder'><label>Sprint Name: </label><input name='sprint'/><br/><label> Start Date: </label><input data-type='date' name='start_date'/><br/><label> End Date: </label><input data-type='date' name='end_date'/><br/><label> Total time (hours cumlative): </label><input name='total_hours' /></div>"))
-			.append($("<div class='sprint_builder'><input type='checkbox' value='1' name='prioritise' checked='checked'><label for='prioritise'>Automatically generate priorities</label></div>"))
-			.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
-			.find('span').remove();
-
-			$( "input[data-type=date]" ).datepicker();
-		//Inital scale
-		_this.ui.scale_window();
-		//Load cards
-		$.get('xhr/list?product='+url['product']+'&sprint=all', function(data){
-			data = JSON.parse(data);
-			
-			//Setup backlog lists
-			for(var i in data.sprints){
-				var sp = data.sprints[i];
-				$(products).append($("<span>Sprint "+sp+"</span>"));
-				$(products).append($("<ul class='connectedSortable' data-type='sprint_"+sp+"'></ul>"));
-			}
-			//Add in cards (from backlogs - need 2 get backlog identifier from "workflow.json")
-			for(var i in data.data){
-				var c = data.data[i];
-				//For now just use backlog
-				if(c.status == 'Backlog'){
-					if(c.sprint==0 || c.sprint=='' || c.sprint == 'all' || c.sprint=='0' ) c.sprint = 'none';
-
-					console.log(c);
-					_this.ui.renderCard(c, $("ul.connectedSortable[data-type='sprint_"+c.sprint+"']"));
-				}
-			}
-			//Make cards draggable
-			$( "#sprint_container .container ul" ).sortable({
-				connectWith: ".connectedSortable",
-				 receive: function(){
-				 	//Do nothing for now.
-				 }
-			}).disableSelection();
-
-			//refit window.
-			_this.ui.scale_window();
-		});
-
-	}
 
 	/***********************
 

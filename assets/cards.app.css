@@ -153,9 +153,11 @@
 	}
 
 	.html5-editor-container .html5-editor {
-		min-height: 60px;
+		min-height: 50px;
 		margin:0px;
 		padding: 0 2px;
+		overflow: auto;
+		max-height: 120px;
 	}
 	.html5-editor-container .toolbar {
 		background-color:#eee;
@@ -240,3 +242,6 @@
 		width:180px;
 		display:inline-block;
 	}
+
+
+	#sprint_container .column ul {min-height:10px;}
