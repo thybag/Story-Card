@@ -206,7 +206,13 @@
 			display: none;
 		}
 		#cpanel .action {width:27%;float:left;}
-		.top .select2-container {width:100% !important; float:right;}
+		/*.top .select2-container {width:100% !important; float:right;}*/
+		/* fall back to native widget on responcive mode to allow mobile devices to use custom handling */
+		.top .select2-container {display:none;}
+		.top #product_selector {display:inline-block !important;width:100% !important}
+		
+
+
 		.top select {width:100%;}
 		.top {height:55px;}
 		.top form{float:right;width:40%;}
