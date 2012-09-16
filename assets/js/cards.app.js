@@ -83,12 +83,12 @@
 		$("#indicator").hide();
 		//Setup message & add reload button markup.
 		var msg='';
-		d.reload = '<p><a href="javascript:document.location.reload();">Click here to reload</a></p>'
+		d.reload = '<p><a href="javascript:document.location.reload();" class="btn">Click here to reload</a></p>'
 		//Generate HTML for error / thanks for installing.
 		if(d.error==true){
-			msg = tpl.template("<div class='greeting'><h1>Oh no! It looks like somthing went wrong.</h1><p>{message}</p> {reload} </div>",d);
+			msg = tpl.template("<div class='greeting'><h2>Oh no! It looks like somthing went wrong.</h2><p>{message}</p> {reload} </div>",d);
 		}else{
-			msg = tpl.template("<div class='greeting'><h1>Thankyou for installing Story-Card</h1><p>{message}</p> {reload}</div>",d);
+			msg = tpl.template("<div class='greeting'><h2>Thankyou for installing Story-Card</h2><p>{message}</p> {reload}</div>",d);
 		}
 		//add to page.
 		$('#card_container').append(msg);
