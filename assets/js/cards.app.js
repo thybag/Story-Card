@@ -141,7 +141,6 @@
 				connectWith: ".connectedSortable",
 				receive: _this.actions.moveCard,
 			}).disableSelection();
-
 		}
 		//Render Auth info (login / logout details)
 		_this.ui.renderAuthInfo(d.authed, d.authed_user);
@@ -313,10 +312,11 @@
 	 */
 	this.ui.renderAuthInfo = function(authed,auth_user){
 		if(authed==1){
-			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" ( <a href='javascript:cards.actions.logout();'>logout</a> ) <img src='assets/cog.png' title='Controls' onClick='cards.actions.toggleControls()'>";
+			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" ";
+			$('.opt-panel').show();
 		}else{
 			document.getElementById('login').innerHTML = "<a href='javascript:cards.ui.showLogin();'>Login in interact</a>";
-			$("#cpanel").hide();
+			$('.opt-panel').hide();
 		}
 	}
 
@@ -391,7 +391,7 @@
 	 * Display login dialog
 	 */
 	this.ui.showLogin = function(){
-		$("#dialog").dialog();
+		$("#dialog").dialog({width: 250});
 	}
 
 	/**
@@ -519,7 +519,7 @@
 			form.append(temp_tpl);
 		}
 		//Add save button
-		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='button' />"));
+		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='button btn-block' />"));
 
 		//return populated form object
 		return form;
@@ -570,12 +570,13 @@
 	 */
 	this.ui.scale_window = function(){
 		var win_width = $(window).width();
-		$(".container.row").width(win_width-285);
-		$(".container.half_row").width((win_width-293)/2);
+		$(".container.row").width(win_width-265);
+		$(".opt-panel").width(win_width-265);
+		$(".container.half_row").width((win_width-272)/2);
 		//$("#todo_container").height($(window).height()-85);
 	}
 	this.ui.equalize = function(){
-		$(".container.row ul").equalize();
+		$(".container.row ul, .container.half_row ul").equalize();
 	}
 
 	/***********************
@@ -738,7 +739,8 @@
 	 * toggle the display of the control panel (via cog icon)
 	 */
 	this.actions.toggleControls = function(){
-		$('#cpanel').toggle();
+		$('#popmenu').css('right','6px').css('top','52px').attr('tabindex',100);
+		$('#popmenu').blur(function(e){ $('#popmenu').hide(); }).show().focus();
 	}
 
 	/**

@@ -4,9 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-	<title>Story Cards</title>
+	<title>Story Card</title>
 
-	<!-- Styles (@todo Add responsive style for mobile viewing? ) -->
+	<!-- Styles -->
+	<link rel="stylesheet" href="assets/styles/bootstrap.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="assets/jquery.ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="assets/select2.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="assets/cards.app.css" type="text/css" media="all" />
@@ -20,14 +21,15 @@
 	<script src='assets/js/template.js'></script>
 	<script src="assets/js/jquery.html5_editor.js"></script>
 	<script src='assets/js/equalize.min.js'></script>
+	<script src='assets/js/bootstrap-dropdown.js'></script>
 	<!-- JavaScript App -->
 	<script src='assets/js/cards.app.js'></script>
 
-	<!-- JS Templates -->
+	<!-- JS Template [Story Card] -->
 	<script id='cardTPL' type='text'>
 		<li class='card' data-ref='{id}'>
 			<div class='card_header'>
-				<span> Priority: {priority}</span>
+				<span> P: {priority}</span>
 				<strong>{title}</strong>
 			</div>
 			<div class='inner'>
@@ -35,6 +37,7 @@
 			</div> 
 		</li>
 	</script>
+	<!-- JS Template [Section] -->
 	<script id='sectionTPL' type='text'>
 		<div class='container {type}'>
 			<span>{title}</span>
@@ -42,6 +45,7 @@
 			</ul>
 		</div>
 	</script>
+	<!-- JS Template [Sprint Form] -->
 	<script id='newSprint_headTPL' type='text'>
 		<div class='sprint_builder'>
 			<label>Sprint Name: </label><input name='sprint'/><br/>
@@ -50,28 +54,45 @@
 			<label> Total time (hours cumlative): </label><input name='total_hours' />
 		</div>
 	</script>
+	<!-- JS Template [Sprint Footer] -->
 	<script id='newSprint_footTPL' type='text'>
 		<div class='sprint_builder'>
 			<input type='checkbox' value='1' name='prioritise' checked='checked'>
 			<label for='prioritise' style='width:220px;'>Automatically generate priorities</label>
 		</div>
 	</script>
-
 </head>
 <body>
 	<div class='top'>
+
 		<form id='options' method='get' >
-			<span>Product:</span> <select id='product_selector' name='product' style="width:280px" onchange='cards.reload(this.value);'></select>
+			<span>Show:</span> 
+			<select id='product_selector' name='product' style="width:280px" onchange='cards.reload(this.value);'></select>
 			<select id='sprints' onchange='cards.reload(document.getElementById("product_selector").value,this.value);'></select>
+
+			<div class='topbar'>
+				<div class='login' id='login'></div>	
+			</div>
 		</form>
-		<h1>Story Cards</h1>
+
+		<h1>Story Card</h1>
 	</div>
-	<div class='topbar'>
-		<div class='login' id='login'>
-		</div>
+
+	<div class='opt-panel' style='display:none;'>
 		<div id='indicator'>Loading...</div>
-		<div style='clear:both'></div>
+		<div class="btn-group" style='display:inline-block;'>
+			<a class="btn " href="javascript:cards.actions.launchNewCardDialog();"><i class="icon-plus-sign "></i> Add card</a>
+			<a class="btn  dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li><a href="javascript:cards.actions.launchNewCardDialog();" >Add Card</a></li>
+		       <li> <a href='javascript:cards.actions.addSprint();'>Create Sprint</a></li>
+		        <li><a href="#" class="menu_bottom"> Add Product</a></li>
+			</ul>
+		</div>
+		<a class="btn " href="#card"><i class="icon-tasks "></i> Reports</a>
+		<a class="btn " href="javascript:cards.actions.logout();"><i class="icon-off "></i> Logout</a>
 	</div>
+	
 
 	<div id='card_container'>
 		<div class='container row' id='cpanel' style='display:none;'>
@@ -88,14 +109,14 @@
 
 
 
-	<div id="dialog" title="Login" style='display:none;'>
+	<div id="dialog" title="Login" style='display:none; '>
 		<form onSubmit='return cards.actions.login(this);'>
 			<div class='errorBox' style='display:none;'></div>
-				<div>Username: <input type='text' name='username' /></div>
-				<div>Password: <input type='password' name='password' /></div>
+				<div><label>Username: </label><input type='text' name='username' /></div>
+				<div><label>Password: </label><input type='password' name='password' /></div>
 			
 			
-			<input type='submit' name='Login' class='button'/>
+			<input type='submit' name='Login' class='button btn-block'/>
 		</form>
 	</div>
 	<div id="alert_dialog" style='display:none;'>
@@ -104,5 +125,6 @@
 	</div>
 	<div id="info_dialog" style='display:none;'>
 	</div>
+
  </body>
  </html>
