@@ -58,6 +58,6 @@ Story-Card was made possible variety of open source packages and scripts.
  * SharePointAPI - https://github.com/thybag/PHP-SharePoint-Lists-API
  * htmLawed -http://code.google.com/p/htmlawed/
 
- ### Styles
+### Styles
 
  * Twitter Bootstrap - http://twitter.github.com/bootstrap/

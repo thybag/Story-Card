@@ -405,7 +405,8 @@
 		$("#alert_dialog div").text(msg);
 		$("#alert_dialog" ).dialog({
 			"title": title,
-			"modal": true
+			"modal": true,
+			"resizable": false
 		});
 	}
 
@@ -420,14 +421,15 @@
 		//Get current card from store
 		var cur_data = _this.cardStore[ref];
 		//Make form
-		var frm = $('<form class="card_data" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
+		var frm = $('<form class="card_data form-horizontal" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
 		frm = _this.ui.renderForm(frm, info, cur_data);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
 		$( "#info_dialog" ).dialog({
-			width: 340,
+			width: 520,
 			modal: true,
-			title: "Additional information required"
+			title: "Additional information required",
+			resizable:false
 		});
 		//Invoke snazzy editor
 		p.invokeEditor();
@@ -447,13 +449,14 @@
 		//Get current card from store
 		var cur_data = _this.cardStore[ref];
 		//Make form
-		var frm = $('<form class="card_data card_edit" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
+		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
 		frm = _this.ui.renderForm(frm, _this.workflow.edit_card, cur_data);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
 		$( "#info_dialog" ).dialog({
 			width: 520,
 			modal: true,
+			resizable:false,
 			title: "Editing card: "+ref
 		});
 		//Invoke snazzy editor
@@ -468,7 +471,7 @@
 	 */
 	this.ui.renderAddDialog = function(){
 		//Make form
-		var frm = $('<form class="card_data card_edit" onSubmit="return cards.actions.addCard(this);"></form>');
+		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.addCard(this);"></form>');
 		frm = _this.ui.renderForm(frm, _this.workflow.new_card);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
@@ -510,10 +513,10 @@
 			}
 			//Templates for textarea / input box differ slighly
 			if(field.type=='textarea'){
-				temp_tpl = tpl.template("<div> <span>{name}:</span> <textarea name='{id}'></textarea></div>", field);
+				temp_tpl = tpl.template("<div class='control-group'><label class='' for='{id}'>{name}:</label><div class=''><textarea name='{id}'></textarea></div></div>", field);
 				$(temp_tpl).find('textarea').val(field.value);
 			}else{
-				temp_tpl = tpl.template("<div> <span>{name}:</span> <input name='{id}' value='{value}'/></div>", field);
+				temp_tpl = tpl.template("<div class='control-group'><label class='control-label' for='{id}'>{name}:</label><div class='controls'><input name='{id}' type='text' value='{value}'/></div></div>", field);
 			}
 			
 			form.append(temp_tpl);
@@ -733,6 +736,7 @@
 		});
 		//re equalise
 		_this.ui.equalize();
+		_this.ui.scale_window();
 	}
 	/**
 	 * toggleControls

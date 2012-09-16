@@ -49,9 +49,11 @@
  	background:none;
  	border: 0;
  	border-bottom: 1px solid #EEE;
-
-
  }
+ .ui-dialog .form-horizontal .control-group {
+ 	margin-bottom: 5px;
+ }
+ .ui-dialog form {margin:0;}
  .ui-dialog .ui-dialog-titlebar .ui-dialog-title{
  	margin: 5px 0;
 	line-height: 30px;
@@ -221,7 +223,22 @@
 		padding: 0 2px;
 		overflow: auto;
 		max-height: 120px;
+
 	}
+	.html5-editor-container .html5-editor:focus {
+		 border-color: rgba(82, 168, 236, 0.8);
+		  outline: 0;
+		  outline: thin dotted \9;
+		  /* IE6-9 */
+
+		  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+		     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+		          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+
+
+	}
+
+	 
 	.html5-editor-container .toolbar {
 		background-color:#eee;
 	}
@@ -257,17 +274,31 @@
 .html5-editor-container .toolbar .underline {text-decoration: underline;}
 .html5-editor-container .toolbar .strike {text-decoration: line-through;font-variant: small-caps;}
 	/* Mobile view */
+	@media only screen and (max-width: 700px) {
+		.select2-container {width:160px !important;}
 
-	@media only screen and (min-width: 0px) and (max-width: 520px) {
+	}
+	@media only screen and (max-width: 550px) {
 		body {background-color:#fff;}
 		.container.column, .container.row, .container.half_row {
 			width:96% !important;
 			margin: 2px 5px !important;
 			float:left;
-
 		}
+
+
+		
+
+
 		.top span, #cpanel span {
 			display: none;
+		}
+		
+		.opt-panel, #indicator {
+			width:96% !important;
+			margin:5px ;
+			padding:0 ;
+			float:none;
 		}
 		#cpanel .action {width:27%;float:left;}
 		/* fall back to native widget on responcive mode to allow mobile devices to use custom handling */
@@ -277,8 +308,9 @@
 
 
 		.top select {width:100%;}
-		.top {height:55px;}
+		.top {height:74px;}
 		.top form{float:right;width:40%;}
+		.topbar .login {display: none;}
 		ul:empty {height:20px;}
 		ul {min-height:0;}
 		li.card {width:95%;height:auto !important;min-height:0;}
@@ -291,12 +323,27 @@
 			border-radius:0;
 			padding:0;
 		}
+		div.ui-dialog .control-label{
+			width:70px;
+		}
+		div.ui-dialog .controls{
+			margin-left:80px;
+		}
 		div.ui-dialog-titlebar{
 			border-radius:0;
 			padding:3px;
 		}
-		div.ui-dialog div input {width:100%;}
+		div.ui-dialog div input {width:90%;}
 	}
+	@media only screen and (max-width: 360px) {
+		.top h1 {font-size:2.6em;}
+		.btn-report {display:none;}
+	}
+	@media only screen and (max-width: 320px) {
+		.top h1 {font-size:2em;}
+		body {min-width:260px;}
+	}
+
 
 
 	#sprint_container .sprint_builder {
