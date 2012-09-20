@@ -237,7 +237,7 @@ class Cards {
 	 * addSprint
 	 * Create a new sprint
 	 *
-	 * @return null
+	 * @return 1|0 success (via echo)
 	 */
 	public function addSprint(){
 		//Sprint
@@ -274,6 +274,20 @@ class Cards {
 			echo 0;
 		}
 
+	}
+	/**
+	 * Add Product
+	 * Add a new product to the system
+	 *
+	 * @return 1|0 success (via echo)
+	 */
+	public function addProduct(){
+
+		if(CardStore::addProduct($_POST['product'], $_POST)){
+			echo 1;
+		}else{
+			echo 0;
+		}
 	}
 
 	/**

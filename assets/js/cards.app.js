@@ -72,6 +72,19 @@
 	}
 
 	/**
+	 * Refresh Settings
+	 * Reload card settings (for adding new products etc)
+	 */
+	this.refreshSettings = function(){
+		$.get('xhr/settings', function(data){
+			var d = JSON.parse(data);
+			_this.workflow = d.workflow;
+			_this.ui.renderProductList(d.products);
+		}
+
+	}
+
+	/**
 	 * Setup display
 	 * Used to display messages during the setup proccess for a new Story-Card installtion.
 	 * Will display both "thanks" messages on success, or error info on failuire.
@@ -437,7 +450,7 @@
 
 	/**
 	 * renderEditDialog
-	 * Display a dialog to allow uses to edit the feilds specified in the workflow.json.
+	 * Display a dialog to allow uses to edit the "edit card" fields specified in the workflow.json.
 	 *
 	 * @param event Click event.
 	 */
@@ -465,7 +478,7 @@
 
 	/**
 	 * renderAddDialog
-	 * Display a dialog to allow uses to edit the feilds specified in the workflow.json.
+	 * Display a dialog to allow uses to edit the "add card" fields specified in the workflow.json.
 	 *
 	 * @param event Click event.
 	 */
@@ -484,7 +497,12 @@
 		p.invokeEditor();
 	}
 
-
+	/**
+	 * renderProductdDialog
+	 * Display a dialog to allow uses to edit the "new product" fields specified in the workflow.json.
+	 *
+	 * @param event Click event.
+	 */
 	this.ui.renderProductDialog = function(){
 		//Make form
 		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.addProduct(this);"></form>');
@@ -718,6 +736,30 @@
 	}
 
 	/**
+	 * Add Product
+	 * Called when a user clicks save on "add product" dialogs. Use ajax add product & update views
+	 *
+	 * @param frm Reference to submitted form.
+	 */
+	this.actions.addProduct = function(frm){
+		//show loading
+		$("#indicator").show();
+		//hide dialog
+		$("#info_dialog").dialog('close');
+		//Submit data
+		$.post("xhr/addCard?product="+url.product, $(frm).serialize(), function(data){
+			$("#indicator").hide();
+			if(data==0){
+				$( "#info_dialog" ).dialog('open');
+				$( "#info_dialog" ).find('.errorBox').css('display','block').text("Warning: Unable to save changes.");
+			}else{
+				_this.refreshSettings();
+			}
+		});
+		return false;
+	}
+
+	/**
 	 * moveCard
 	 * Called when a user drags a story card between two status areas. Ensures move is valid, then updates datasource to reflect change via ajax
 	 *
@@ -769,6 +811,10 @@
 		_this.ui.renderAddDialog();
 	}
 
+	/**
+	 * launchProductDialog
+	 * launch the add new product dialog
+	 */
 	this.actions.launchProductDialog = function(){
 		_this.ui.renderProductDialog();
 	}
