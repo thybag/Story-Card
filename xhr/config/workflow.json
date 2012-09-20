@@ -11,7 +11,9 @@
          "status":  {"type":"select", "default_value":"Backlog"},
 
          "time_spent": {"name":"Time Spent (hours)", "type":"text"},
-         "completion_notes": {"name":"Work Summary", "type":"textarea"}
+         "completion_notes": {"name":"Work Summary", "type":"textarea"},
+
+         "product_title": {"id":"product", "name":"Product name"}
     },
     "Statuses": {
         "Backlog": {
@@ -41,6 +43,10 @@
             "display": "half_row"
         }
     },
-    "new_card": ["title","story","acceptance","priority","estimate"],
-    "edit_card": ["title","story","acceptance","priority","estimate","time_spent","completion_notes"]
+    "forms":{
+        "new_card": ["title","story","acceptance","priority","estimate"],
+        "edit_card": ["title","story","acceptance","priority","estimate","time_spent","completion_notes"],
+        "new_product": ["product_title"]
+    }
+    
 }

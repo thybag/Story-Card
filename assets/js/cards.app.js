@@ -450,7 +450,7 @@
 		var cur_data = _this.cardStore[ref];
 		//Make form
 		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.updateCard(this);"><input type="hidden" name="id" value="'+ref+'"/></form>');
-		frm = _this.ui.renderForm(frm, _this.workflow.edit_card, cur_data);
+		frm = _this.ui.renderForm(frm, _this.workflow.forms.edit_card, cur_data);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
 		$( "#info_dialog" ).dialog({
@@ -472,13 +472,29 @@
 	this.ui.renderAddDialog = function(){
 		//Make form
 		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.addCard(this);"></form>');
-		frm = _this.ui.renderForm(frm, _this.workflow.new_card);
+		frm = _this.ui.renderForm(frm, _this.workflow.forms.new_card);
 		//Shovel it all in to a dialog.
 		$( "#info_dialog" ).html(frm);
 		$( "#info_dialog" ).dialog({
 			width: 520,
 			modal: true,
 			title: "Adding new Story"
+		});
+		//Invoke snazzy editor
+		p.invokeEditor();
+	}
+
+
+	this.ui.renderProductDialog = function(){
+		//Make form
+		var frm = $('<form class="card_data card_edit form-horizontal" onSubmit="return cards.actions.addProduct(this);"></form>');
+		frm = _this.ui.renderForm(frm, _this.workflow.forms.new_product);
+		//Shovel it all in to a dialog.
+		$( "#info_dialog" ).html(frm);
+		$( "#info_dialog" ).dialog({
+			width: 520,
+			modal: true,
+			title: "Adding new product"
 		});
 		//Invoke snazzy editor
 		p.invokeEditor();
@@ -500,8 +516,10 @@
 		for(var i in fields){
 			//Grab a copy of the attributes config (specified in workflow.json)
 			var field = Object.create(_this.workflow.attributes[fields[i]]);
-			//Set in attributes id & use id as name if one is not provided
-			field.id = fields[i];
+			//If no id attribute, use JSON id
+			if(typeof field.id == 'undefined') field.id = fields[i];
+
+			//use id as name if one is not provided
 			field.name = (typeof field.name !='undefined') ? field.name : fields[i];
 			//If current data exists, attempt to prefill value
 			if(typeof cur_data != 'undefined'){
@@ -522,7 +540,7 @@
 			form.append(temp_tpl);
 		}
 		//Add save button
-		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='button btn-block' />"));
+		form.append($("<div class='errorBox' style='display:none;'></div><input type='submit' value='Save' class='btn btn-cards btn-block' />"));
 
 		//return populated form object
 		return form;
@@ -550,7 +568,7 @@
 		//Add head/foot forms
 		.prepend(tpl.template('newSprint_headTPL')).append(tpl.template('newSprint_footTPL'))
 		//Submit button
-		.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' /><a class='btn btn-danger' href='javascript:cards.actions.closeSprintBuilder();'>Cancel</a>"))
+		.append($("<input type='submit' style='margin:5px;' value='Create sprint' class='btn btn-cards right' onclick='' /><a class='btn btn-danger' href='javascript:cards.actions.closeSprintBuilder();'>Cancel</a>"))
 		.find('span').remove();
 
 		//Activate datapicker
@@ -750,6 +768,11 @@
 	this.actions.launchNewCardDialog = function(){
 		_this.ui.renderAddDialog();
 	}
+
+	this.actions.launchProductDialog = function(){
+		_this.ui.renderProductDialog();
+	}
+	
 
 	/**
 	 * generate "create new sprint from"
