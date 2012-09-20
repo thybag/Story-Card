@@ -90,7 +90,20 @@ class FlatFileStore extends StoreAbstract{
 	}
 	//Stubs
 	public function removeCard($id){}
-	public function addProduct($title,$data){}
+
+	/**
+	 * Add product
+	 * add new product to products list
+	 *
+	 * @param $title Product title
+	 * @param $data Product attributes (unused)
+	 */
+	public function addProduct($title,$data){
+		$json = json_decode(file_get_contents($this->cache.'products.txt'));
+		$json[] = $title;
+		file_put_contents($this->cache.'products.txt', json_encode($json));
+		return true;
+	}
 
 	 /**
      * Add a new Sprint

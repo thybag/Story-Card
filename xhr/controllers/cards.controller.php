@@ -284,7 +284,7 @@ class Cards {
 	public function addProduct(){
 
 		if(CardStore::addProduct($_POST['product'], $_POST)){
-			echo 1;
+			echo $_POST['product'];
 		}else{
 			echo 0;
 		}

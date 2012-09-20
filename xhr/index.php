@@ -38,6 +38,7 @@ Flight::route('/logout', array($cards,'logout'));
 Flight::route('/move', array($cards,'move'));
 Flight::route('/addCard', array($cards,'addCard'));
 Flight::route('/addSprint', array($cards,'addSprint'));
+Flight::route('/addProduct', array($cards,'addProduct'));
 Flight::route('/updateCard', array($cards,'updateCard'));
 Flight::route('/lastchange', array($cards,'lastchange'));
 //Go!

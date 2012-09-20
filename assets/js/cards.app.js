@@ -80,7 +80,7 @@
 			var d = JSON.parse(data);
 			_this.workflow = d.workflow;
 			_this.ui.renderProductList(d.products);
-		}
+		});
 
 	}
 
@@ -307,6 +307,9 @@
 	 * @param callback Callback to run once UI has been created.
 	 */
 	this.ui.renderProductList = function(products){
+		//Blank element
+		document.getElementById('product_selector').innerHTML = '';
+		//Add items
 		var o, qp = _this.settings.query_options;
 		products.forEach(function(p){
 			o = document.createElement("option");
@@ -747,12 +750,13 @@
 		//hide dialog
 		$("#info_dialog").dialog('close');
 		//Submit data
-		$.post("xhr/addCard?product="+url.product, $(frm).serialize(), function(data){
+		$.post("xhr/addProduct", $(frm).serialize(), function(data){
 			$("#indicator").hide();
 			if(data==0){
 				$( "#info_dialog" ).dialog('open');
 				$( "#info_dialog" ).find('.errorBox').css('display','block').text("Warning: Unable to save changes.");
 			}else{
+				_this.reload(data);
 				_this.refreshSettings();
 			}
 		});
