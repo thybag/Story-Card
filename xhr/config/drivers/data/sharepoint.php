@@ -102,11 +102,20 @@ class SharePointStore extends StoreAbstract{
 
 	 /**
      * Add a new Sprint
-     * Create a sprint item by adding to the sprints array in the product file json.
+     * Create a sprint item
      * 
      * @return $identifier ID of sprint
      */
 	public function addSprint($identifier,$data){
+		//Although we store this, for now Story-Card will still grab the sprints list from the backlog results
+		//data stored here is for information purposes only
+		$this->sp->add('Sprints',array(
+			"Title"	 	=> $identifier,
+    		"Start" 	=> $data['start_date'],
+    		"End"		=> $data['end_date'],
+    		"Time" 		=> $data['hours'],
+		));
+		//return sprint ID
     	return $identifier;
     }
 
@@ -130,7 +139,7 @@ class SharePointStore extends StoreAbstract{
 
 		//Sharepoint doesnt survive bad types, so fix em
 		if(isset($data['priority'])) $data['priority'] = ($data['priority']=='?') ? (int) $data['priority'] : '';
-		if(isset($data['sprint']))   $data['sprint'] = (int) $data['sprint'] ;
+		if(isset($data['sprint']))   $data['sprint'] = (double) $data['sprint'] ;
 
 		//Lookup product id (as Product is a lookup type field)
 		$product = $this->sp->query(Config::get('sharepoint.productlist'))->where("Title","=",$data['product'])->get();
@@ -212,8 +221,8 @@ class SharePointStore extends StoreAbstract{
 			$d = $this->reMap($d,true);
 			//Tweak values to get better results (Account for some Sharepoint quirks)
 			$d->priority = ($d->priority =='' || $d->priority=='?') ? '?' : round(trim($d->priority)); //Priority must be number or "?""
-			$d->time_spent = round(trim($d->time_spent));//as number
-			$d->sprint = round(trim($d->sprint));//as number (0=none)
+			$d->time_spent = round(trim($d->time_spent),1);//as number
+			$d->sprint = trim($d->sprint);//as number (0=none)
 			$d->acceptance = ($d->acceptance!='' && $d->acceptance!='<div></div>') ? $d->acceptance : 'None provided'; //Add empty text
 			$d->story = ($d->story!='' && $d->story!='<div></div>') ? $d->story : 'None provided'; //add empty text
 			

@@ -110,7 +110,7 @@ class Cards {
 		$sprint = 'all';
 		//Override is alternative is provided
 		if(isset($_GET['product'])){$product = $_GET['product'];}
-		if(isset($_GET['sprint'])){ $sprint = (strtolower($_GET['sprint'])!='all') ? (int)$_GET['sprint'] : 'all';}
+		if(isset($_GET['sprint'])){ $sprint = (strtolower($_GET['sprint'])!='all') ? $_GET['sprint'] : 'all';}
 		//Get list of storycards from cardstore driver.
 		$data = CardStore::getCardsFor($product, $sprint);
 		//Setup array (Associative arrays will become objects when stored in JSON)
