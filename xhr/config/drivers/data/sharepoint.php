@@ -222,6 +222,7 @@ class SharePointStore extends StoreAbstract{
 			//Tweak values to get better results (Account for some Sharepoint quirks)
 			$d->priority = ($d->priority =='' || $d->priority=='?') ? '?' : round(trim($d->priority)); //Priority must be number or "?""
 			$d->time_spent = round(trim($d->time_spent),1);//as number
+			$d->estimate = round(trim($d->estimate),1);//as number
 			$d->sprint = trim($d->sprint);//as number (0=none)
 			$d->acceptance = ($d->acceptance!='' && $d->acceptance!='<div></div>') ? $d->acceptance : 'None provided'; //Add empty text
 			$d->story = ($d->story!='' && $d->story!='<div></div>') ? $d->story : 'None provided'; //add empty text
