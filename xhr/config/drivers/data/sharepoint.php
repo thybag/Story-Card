@@ -109,7 +109,7 @@ class SharePointStore extends StoreAbstract{
 	public function addSprint($identifier,$data){
 		//Although we store this, for now Story-Card will still grab the sprints list from the backlog results
 		//data stored here is for information purposes only
-		$this->sp->add('Sprints',array(
+		$this->sp->add(Config::get('sharepoint.sprintlist'),array(
 			"Title"	 	=> $identifier,
     		"Start" 	=> $data['start_date'],
     		"End"		=> $data['end_date'],

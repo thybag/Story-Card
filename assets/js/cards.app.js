@@ -542,10 +542,6 @@
 		var product_panel = tpl.template("sectionTPL", {type:"column", title:"Product Backlog", status:"sprint_none"});
 		var newsprint = tpl.template("sectionTPL", {type:"row", title:"Hi", status:"product_backlog"});
 		//Append in to the sprint container
-
-		var backbutton = $("<div class='container row cpanel'><span>Control panel:</span><a class='action' href='javascript:cards.actions.closeSprintBuilder();'>Back</a></div>");
-
-		document.getElementById('sprint_container').appendChild(backbutton.get(0));
 		document.getElementById('sprint_container').appendChild(product_panel);
 		document.getElementById('sprint_container').appendChild(newsprint);
 
@@ -554,7 +550,7 @@
 		//Add head/foot forms
 		.prepend(tpl.template('newSprint_headTPL')).append(tpl.template('newSprint_footTPL'))
 		//Submit button
-		.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' />"))
+		.append($("<input type='submit' style='width:100px; margin:5px;' value='Create sprint' class='button right' onclick='' /><a class='btn btn-danger' href='javascript:cards.actions.closeSprintBuilder();'>Cancel</a>"))
 		.find('span').remove();
 
 		//Activate datapicker

@@ -44,6 +44,7 @@ $config['datastore'] = 'flatfile';
 //$config['sharepoint.password'] = '';
 //$config['sharepoint.cardlist'] = 'Product Backlog';
 //$config['sharepoint.productlist'] = 'Products';
+//$config['sharepoint.sprintlist'] = 'Sprints';
 //$config['sharepoint.view'] = 'story_card_api';
 
 //$config['datastore'] = 'mysql';
