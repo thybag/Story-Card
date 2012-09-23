@@ -750,13 +750,14 @@
 		//hide dialog
 		$("#info_dialog").dialog('close');
 		//Submit data
-		$.post("xhr/addProduct", $(frm).serialize(), function(data){
+		$.post("xhr/addProduct", $(frm).serialize(), function(raw){
 			$("#indicator").hide();
-			if(data==0){
+			var data = JSON.parse(raw);
+			if(typeof data.error !== 'undefined'){
 				$( "#info_dialog" ).dialog('open');
-				$( "#info_dialog" ).find('.errorBox').css('display','block').text("Warning: Unable to save changes.");
+				$( "#info_dialog" ).find('.errorBox').css('display','block').text(data.error);
 			}else{
-				_this.reload(data);
+				_this.reload(data.product);
 				_this.refreshSettings();
 			}
 		});

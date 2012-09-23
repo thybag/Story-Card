@@ -7,9 +7,10 @@
 	}
 
 	.top {
-		background-color:#243045;
 		color:#fff;
 		height:66px;
+		background: #243045 url("img/logo.png") no-repeat 8px 17px;
+		padding-left: 36px;
 	}
 	.top h1 {
 		margin:12px;
@@ -79,7 +80,7 @@
 
 	#indicator {
 		text-align:left;
-		background: url(ajax-loader.gif) no-repeat 10px;
+		background: url(img/ajax-loader.gif) no-repeat 10px;
 		width:100px;
 		padding-left:145px;
 		margin-top:4px;

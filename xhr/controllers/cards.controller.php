@@ -282,11 +282,16 @@ class Cards {
 	 * @return 1|0 success (via echo)
 	 */
 	public function addProduct(){
-
+		//Dont allow duplicates
+		$products = CardStore::listProducts();
+		if(in_array($_POST['product'],$products)){
+			echo "{\"error\":\"This product already exists\"}";die();
+		}
+		//Attempt add
 		if(CardStore::addProduct($_POST['product'], $_POST)){
-			echo $_POST['product'];
+			echo "{\"product\":\"{$_POST['product']}\"}";
 		}else{
-			echo 0;
+			echo "{\"error\":\"An unknown error occured in the datastore driver. Please try again\"}";
 		}
 	}
 
