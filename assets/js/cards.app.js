@@ -242,6 +242,7 @@
 				_this.cardRefresh(); 
 				console.log("Apply update: " + _this.loaded + " " + data);
 			}
+		}).complete(function(){
 			//Check again in the time specified via the refresh rate
 			setTimeout(function(){ _this.checkForChanges() }, _this.settings.refresh_time);
 		});
@@ -282,7 +283,7 @@
 						//Apply move if needed
 						var card = $(".card[data-ref="+i+"]");
 						if(card.parent().attr('data-type') != _this.cardStore[i].status){
-							p.visualCardMove(i,card, t);
+							p.visualCardMove(i, card, t);
 							t +=900;
 						}else{
 							//redraw in case of text changes
@@ -981,6 +982,7 @@
 				//remove position absolute so card fits back in normally.
 				$(this).css('position','static');
 				_this.ui.equalize();
+				_this.ui.scale_window();
 			});
 		},time);
 	}
