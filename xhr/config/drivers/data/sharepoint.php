@@ -121,7 +121,19 @@ class SharePointStore extends StoreAbstract{
 
 	//Stubs
 	public function removeCard($id){}
-	public function addProduct($title,$data){}
+
+
+	/**
+	 * Add product
+	 * add new product to products list
+	 *
+	 * @param $title Product title
+	 * @param $data Product attributes (unused)
+	 */
+	public function addProduct($title,$data){
+		//Ultra simple for now, just store title.
+		$this->sp->add(Config::get('sharepoint.productlist'), array('Title'=>$title));
+	}
 
    //Setup (not currently possible for sharepoint)
     public function setup(){
