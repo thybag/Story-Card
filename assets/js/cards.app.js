@@ -10,6 +10,7 @@
 
 	//DataStores
 	this.cardStore = {};
+	this.cardHashes = {};
 	this.workflow = {};
 	this.loaded = '0';	// Last loaded time
 
@@ -144,8 +145,11 @@
 		sorter.sort(function(a,b){return parseInt(d.data[a].priority) < parseInt(d.data[b].priority) ? 1 : -1;});
 		//then iterate through the sorter array, adding cards to the page in the order it suggests
 		for(var i=0;i<sorter.length;i++){
+			var tmp_card = d.data[sorter[i]];
+			//store hash
+			_this.cardHashes[tmp_card.id] = p.generateCardHash(tmp_card);
 			//Render card
-			_this.ui.renderCard(d.data[sorter[i]]);
+			_this.ui.renderCard(tmp_card);
 		}
 		
 		//Do Dragger
@@ -252,16 +256,41 @@
 		var pro = _this.settings.query_options['product'];
 		var s = _this.settings.query_options['sprint'];
 		$.get('xhr/list?product='+pro+'&sprint='+s+'&after='+_this.loaded , function(data){
+				//store new data
 				var d = JSON.parse(data);
 				_this.loaded = d.loaded;
 				_this.cardStore = d.data;
-				var t = 10;
+				//Timer offset for animation (if moving)
+				var t = 10, newhash= '', current_card=null;
 				for(var i in d.data){
-					var card = $(".card[data-ref="+i+"]");
-					if(card.parent().attr('data-type') != _this.cardStore[i].status){
-						p.visualCardMove(i,card, t);
-						t +=900;
+					//Regen hash and check hasstore to see if we have changes to display
+					current_card = _this.cardStore[i];
+					newhash = p.generateCardHash(current_card);
+
+					//If card has no match in hashlist, it must be new. 
+					if(typeof cards.cardHashes[current_card.id] == 'undefined'){
+						//Draw it & save its hash
+						_this.ui.renderCard(current_card);
+						cards.cardHashes[current_card.id] = newhash;
+						return;
 					}
+
+					//see if change has occured
+					if(newhash != cards.cardHashes[current_card.id]){
+						//update hash
+						cards.cardHashes[current_card.id] = newhash;
+						//Apply move if needed
+						var card = $(".card[data-ref="+i+"]");
+						if(card.parent().attr('data-type') != _this.cardStore[i].status){
+							p.visualCardMove(i,card, t);
+							t +=900;
+						}else{
+							//redraw in case of text changes
+							p.reDrawCard(current_card.id);
+						}
+						
+					}
+
 				}
 		});
 	}
@@ -951,6 +980,7 @@
 			card.animate({left:new_pos.left, top:new_pos.top}, 800, function(){
 				//remove position absolute so card fits back in normally.
 				$(this).css('position','static');
+				_this.ui.equalize();
 			});
 		},time);
 	}
@@ -997,6 +1027,23 @@
 			 });
 		//rescale enviroment
 		_this.ui.scale_window();
+	}
+
+	//generate HASH
+	//based on http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
+	p.hash = function(str){
+		var hash = 0, i, char;
+	    if (str.length == 0) return hash;
+	    for (i = 0; i < str.length; i++) {
+	        char = str.charCodeAt(i);
+	        hash = ((hash<<5)-hash)+char;
+	        hash = hash & hash; // Convert to 32bit integer
+	    }
+	    return hash;
+	}
+	//gen hash for card
+	p.generateCardHash = function(card){
+		return p.hash(JSON.stringify(card));
 	}
 
 	//Make cards accessible in the global namespace
