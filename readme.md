@@ -2,6 +2,8 @@
 
 Story-card is an easy to use, highly customisable, interactive, online Story Card dashboard. By default story-card comes with drivers ready to use with MySQL, flatfile & sharepoint setups, although you can write your own to get story-card working with any datastore you like.
 
+You can view a live demo here: http://userbag.co.uk/demo/storycard
+
 Story-card uses the [Flight](http://flightphp.com/) PHP micro-framework and [jQuery](http://jquery.com/) for all the heavy(ish) lifting. By default a "singleuser" authentication driver is in use, although an LDAP driver is also included.
 
 ## Flat file Installation
