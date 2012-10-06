@@ -186,7 +186,7 @@
 		qo.product = pro;
 		qo.sprint = spr;
 		//Update URL (if we can)
-		window.history.pushState({}, document.title , '?product='+pro+'&sprint='+spr);
+		if(typeof window.history.pushState != 'undefined') window.history.pushState({}, document.title , '?product='+pro+'&sprint='+spr);
 		//setup new card display
 		$.get('xhr/list?product='+pro+'&sprint='+spr, _this.setup);
 	}
