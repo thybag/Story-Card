@@ -133,6 +133,7 @@ class SharePointStore extends StoreAbstract{
 	public function addProduct($title,$data){
 		//Ultra simple for now, just store title.
 		$this->sp->add(Config::get('sharepoint.productlist'), array('Title'=>$title));
+		return true;
 	}
 
    //Setup (not currently possible for sharepoint)

@@ -180,7 +180,30 @@ class MysqlStore extends StoreAbstract{
 
 	//stub
 	public function removeCard($id){	}
-	public function addProduct($title,$data){}
+
+	/**
+	 * Add product
+	 * add new product to products list
+	 *
+	 * @param $title Product title
+	 * @param $data Product attributes (unused)
+	 */
+	public function addProduct($title,$data){
+		try{
+			//Prepare query 
+			$q = $this->dbconn->prepare("INSERT INTO sc_products (product)  VALUES (?)");
+			//run it
+			$q->execute(array($title));
+
+			//return id if all went well
+			return true;
+		}catch (PDOException $e) {
+			// or null if it fails
+			return false;
+		}
+
+
+	}
    
 
 
