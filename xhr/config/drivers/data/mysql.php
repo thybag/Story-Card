@@ -25,8 +25,7 @@ class MysqlStore extends StoreAbstract{
 			$this->dbconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}catch (PDOException $e) {
 			// if not able to connect to the database die and display error message
-			echo '{"setup":true, "error":true, "message":"It seems we are unable to connect to the database <strong>'.Config::get("mysql.database").'</strong>.</br>The error message was: '.$e->getMessage().'"}';
-			die();
+			$this->showError("It seems we are unable to connect to the database <strong>".Config::get("mysql.database")."</strong>.</br>The error message was: ".$e->getMessage());
 		}
 	}	
 

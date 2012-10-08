@@ -25,13 +25,19 @@ class SharePointStore extends StoreAbstract{
 	 */
 	public function __construct(){
 		//If user is logged in access sharepoint using their credentals
-		if(isset($_SESSION['auth'])){
-			//Setup sharepoint object with user credentals
-			$this->sp = new SharePointAPI($_SESSION['username'],$_SESSION['password'],Config::get('sharepoint.wsdl'));
-		}else{
-			//Setup sharepoint object with default/service account credentals
-			$this->sp = new SharePointAPI(Config::get('sharepoint.user'), Config::get('sharepoint.password'), Config::get('sharepoint.wsdl'));
+		try{
+			if(isset($_SESSION['auth'])){
+				//Setup sharepoint object with user credentals
+				$this->sp = new SharePointAPI($_SESSION['username'],$_SESSION['password'],Config::get('sharepoint.wsdl'));
+			}else{
+				//Setup sharepoint object with default/service account credentals
+				$this->sp = new SharePointAPI(Config::get('sharepoint.user'), Config::get('sharepoint.password'), Config::get('sharepoint.wsdl'));
+			}
+		}catch(Exception $e){
+			$this->showError("It seems we were not able to connect to sharePoint.<br/>Error: ".$e->getMessage());
 		}
+
+
 		//Set return type as Object & disable lowercase index's in order to ensure data mappings work as expected.
 		$this->sp->setReturnType('object');
 		$this->sp->lowercaseIndexs(false);
@@ -47,8 +53,14 @@ class SharePointStore extends StoreAbstract{
 	 * @return array $products
 	 */
 	public function listProducts(){
-		//List products alphabetically
-		$data = $this->sp->query(Config::get('sharepoint.productlist'))->sort("Title","ASC")->get();
+		//List products alphabetically 
+		//(catch connection error here since this is first time we actually talk to soap)
+		try{
+			$data = $this->sp->query(Config::get('sharepoint.productlist'))->sort("Title","ASC")->get();
+		}catch(Exception $e){
+			$this->showError("It seems we were not able to connect to sharePoint.<br/>Error: ".$e->getMessage());
+		}
+		
 		//Convert results in to flat array
 		$products = array();
 		foreach($data as $product){

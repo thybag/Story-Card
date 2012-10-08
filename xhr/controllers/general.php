@@ -59,4 +59,10 @@ abstract class StoreAbstract
         //Return remapped object. (as array if that is what is was to begin with)
         return ($isobj) ? $newData : (array)$newData;
     }
+
+    //Show error to user (for critical errors)
+    protected function showError($errorMessage){
+        echo json_encode(array("setup"=>true, "error"=>true, "message"=>$errorMessage));
+        die();
+    }
 }
