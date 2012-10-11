@@ -26,9 +26,9 @@ class SharePointStore extends StoreAbstract{
 	public function __construct(){
 		//If user is logged in access sharepoint using their credentals
 		try{
-			if(isset($_SESSION['auth'])){
+			if(isset($_SESSION['sc_auth'])){
 				//Setup sharepoint object with user credentals
-				$this->sp = new SharePointAPI($_SESSION['username'],$_SESSION['password'],Config::get('sharepoint.wsdl'));
+				$this->sp = new SharePointAPI($_SESSION['sc_username'],$_SESSION['sc_password'],Config::get('sharepoint.wsdl'));
 			}else{
 				//Setup sharepoint object with default/service account credentals
 				$this->sp = new SharePointAPI(Config::get('sharepoint.user'), Config::get('sharepoint.password'), Config::get('sharepoint.wsdl'));
