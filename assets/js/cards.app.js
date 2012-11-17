@@ -361,7 +361,7 @@
 			document.getElementById('login').innerHTML = "Logged in as "+auth_user+" ";
 			$('.opt-panel').show();
 		}else{
-			document.getElementById('login').innerHTML = "<a href='javascript:cards.ui.showLogin();'>Login in interact</a>";
+			document.getElementById('login').innerHTML = "<a href='javascript:cards.ui.showLogin();'>Login to interact</a>";
 			$('.opt-panel').hide();
 		}
 	}
