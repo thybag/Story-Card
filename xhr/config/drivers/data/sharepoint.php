@@ -226,7 +226,7 @@ class SharePointStore extends StoreAbstract{
 			//If sprint is 0, return all cards for product regardless of sprint 
 			$data = $this->backlog->query()
 				->where('Product','=',$product)
-				->limit(150)
+				->limit(350)
 				->sort('Priority','DESC')
 				->using(Config::get('sharepoint.view'))
 				->get();
@@ -235,11 +235,12 @@ class SharePointStore extends StoreAbstract{
 			$data = $this->backlog->query()
 				->where('Product','=',$product)
 				->and_where('Sprint','=',$sprint)
-				->limit(150)
+				->limit(350)
 				->sort('Priority','DESC')
 				->using(Config::get('sharepoint.view'))
 				->get();
 		}
+
 		//For each result returned from the SharePoint API
 		foreach($data as $d){
 			//Remap columns to fit the systems internal datamodle
